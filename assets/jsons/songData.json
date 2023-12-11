@@ -1,0 +1,42 @@
+[
+  {
+    "id": "song_001",
+    "name": "Cyberpunk",
+    "author": "pixa music",
+    "duration": 116,
+    "icon": "1015",
+    "price": 3010
+  },
+  {
+    "id": "song_002",
+    "name": "Shadowy Figure",
+    "author": "pixa music",
+    "duration": 102,
+    "icon": "1005",
+    "price": 1210
+  },
+  {
+    "id": "song_003",
+    "name": "Love Song",
+    "author": "pixa music",
+    "duration": 123,
+    "icon": "1011",
+    "price": 2010
+  },
+  {
+    "id": "song_004",
+    "name": "Running",
+    "author": "pixa music",
+    "duration": 123,
+    "icon": "1005",
+    "price": 2020
+  },
+  {
+    "id": "song_005",
+    "name": "80s Music",
+    "author": "pixa music",
+    "duration": 180,
+    "icon": "1011",
+    "price": 2020
+  }
+]
