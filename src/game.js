@@ -16,6 +16,7 @@ import { DataLocal } from "./magicTiles3/data/dataLocal";
 import { LoadingScene, LoadingSceneEvent } from "./magicTiles3/scenes/loadingScene";
 import { Time } from "./systems/time/time";
 import { HomeScene, HomeSceneEvent } from "./magicTiles3/scenes/homeScene";
+import { Physics } from "./physics/physics";
 
 export class Game {
   static init() {
@@ -62,6 +63,7 @@ export class Game {
 
     this.resize(screenSize);
 
+    Physics.init(this.app); // init physics
     SceneManager.init([
       new PlayScene(this.app),
       new PauseScene(),
