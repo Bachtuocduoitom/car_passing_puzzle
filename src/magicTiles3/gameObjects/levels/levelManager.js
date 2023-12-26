@@ -2,6 +2,7 @@ import { Container } from "pixi.js";
 import { Game } from "../../../game";
 import { Time } from "../../../systems/time/time";
 import { LevelEvent } from "./levelEvent";
+import { DirectionSignSpawner } from "../directionSigns/directionSignSpawner";
 
 export class LevelManager extends Container {
   constructor() {
@@ -64,7 +65,7 @@ export class LevelManager extends Container {
   }
 
   addLevel(level) {
-    level.visible = false;
+    level.visible = false; //hide level
     this.addChild(level);
     this.levels.push(level);
   }

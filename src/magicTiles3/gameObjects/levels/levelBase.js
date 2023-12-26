@@ -1,18 +1,29 @@
 import { Container, Rectangle, Texture } from "pixi.js";
 import { LevelEvent } from "./levelEvent";
+import { DirectionSignSpawner } from "../directionSigns/directionSignSpawner";
+import { DirectionSignDirection } from "../directionSigns/directionSignDirection";
 
 export class LevelBase extends Container{
-  constructor() {
+  constructor(directionSignSpawner) {
     super();
     this.autoStart = true;
     /** @type {Array<Vehicle>} */
     this.vehicles = [];
+    this.directionSigns = [];
+    this.directionSignSpawner = directionSignSpawner;
+    this._config();
   }
 
   update(dt) {
     this.vehicles.forEach(vehicle => {
       vehicle.update(dt);
     });
+  }
+
+  _config() {
+    this.map = new Container();
+    this.map.sortableChildren = true;
+    this.addChild(this.map);
   }
 
   start() {
@@ -40,5 +51,12 @@ export class LevelBase extends Container{
         return texture;
     }
     return null; // Return null for empty tiles
+  }
+
+  _createDirectionSign(type = null, direction = DirectionSignDirection.RIGHT, position = null) {
+    let directionSign = this.directionSignSpawner.spawnDirectionSign(type, direction, position);
+    console.log(directionSign.direction);
+    this.directionSigns.push(directionSign);
+    this.map.addChild(directionSign);
   }
 }

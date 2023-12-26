@@ -7,9 +7,8 @@ import { DirectionSignDirection } from "../directionSigns/directionSignDirection
 import { CollisionTag } from "../../../physics/aabb/collisionTag";
 
 export class Level1 extends LevelBase {
- constructor() {
-    super();
-    this._config();
+ constructor(directionSignSpawner) {
+    super(directionSignSpawner);
     this._generateMap();
     this._createVehicles();
     this._createDirectionSigns();
@@ -21,10 +20,8 @@ export class Level1 extends LevelBase {
   }
 
   _config() {
-    this.map = new Container();
-    this.map.sortableChildren = true;
+    super._config();
     this.map.scale.set(1.5);
-    this.addChild(this.map);
 
     this.mapWidth = level1.width;
     this.mapHeight = level1.height;
@@ -71,12 +68,16 @@ export class Level1 extends LevelBase {
   }
 
   _createDirectionSigns() {
-    this.directionSign = new DirectionSign(CollisionTag.TurnRightSign, DirectionSignDirection.RIGHT);
-    this.directionSign.x = 9 * this.tileWidth + this.directionSign.width /2 - this.mapWidth * this.tileWidth / 2;
-    this.directionSign.y = 5 * this.tileHeight + this.directionSign.height / 2 - this.mapHeight * this.tileHeight / 2;
-    console.log(this.directionSign.x, this.directionSign.y);
-    this.directionSign.zIndex = 4;
-    this.map.addChild(this.directionSign);
+    // this.directionSign = new DirectionSign();
+    // this.directionSign.x = 9 * this.tileWidth + this.directionSign.width /2 - this.mapWidth * this.tileWidth / 2;
+    // this.directionSign.y = 5 * this.tileHeight + this.directionSign.height / 2 - this.mapHeight * this.tileHeight / 2;
+    // console.log(this.directionSign.x, this.directionSign.y);
+    // this.directionSign.zIndex = 4;
+    // this.map.addChild(this.directionSign);
+    
+    // 32 is width and height of direction sign texture
+    let position = {x: 9 * this.tileWidth + 32 /2 - this.mapWidth * this.tileWidth / 2, y: 5 * this.tileHeight + 32 / 2 - this.mapHeight * this.tileHeight / 2};
+    this._createDirectionSign(CollisionTag.TurnRightSign, DirectionSignDirection.RIGHT, position);
   }
   
 }
