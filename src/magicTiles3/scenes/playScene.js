@@ -4,18 +4,12 @@ import { Alignment, MaintainAspectRatioType } from "../../pureDynamic/core/pureT
 import { AssetSelector } from "../assetSelector";
 import { GameResizer } from "../../pureDynamic/systems/gameResizer";
 import { GameConstant } from "../../gameConstant";
-import { TileManager } from "../gameObjects/tile/tileManager";
-import { TileType } from "../gameObjects/tile/tileType";
 import { GameSetting } from "../gameSetting";
 import { GameStateManager, GameState } from "../../pureDynamic/systems/gameStateManager";
-import { TapResult, TapResultType } from "../gameObjects/tapResult";
 import { PureSprite } from "../../pureDynamic/PixiWrapper/pureSprite";
 import { PureText } from "../../pureDynamic/PixiWrapper/pureText";
 import { Game } from "../../game";
-import { Grid } from "../gameObjects/grid";
-import { Container, Texture, Point } from "pixi.js";
-import { Progress, ProgressEvent } from "../gameObjects/progress/progress";
-import { ProgressBar } from "../gameObjects/progress/progressBar";
+import { Container, Texture, Point, Sprite, Rectangle } from "pixi.js";
 import { Util } from "../../helpers/utils";
 import { SoundManager } from "../../soundManager";
 import { Tween } from "../../systems/tween/tween";
@@ -29,6 +23,8 @@ import { DataLocal } from "../data/dataLocal";
 import { WinScreen, WinScreenEvent } from "../screens/winScreen";
 import { ResultDefaultFx } from "../gameObjects/effect/resultDefaultFx";
 import { PerfectFx } from "../gameObjects/effect/perfectFx";
+import { LevelManager } from "../gameObjects/levels/levelManager";
+import { Level1 } from "../gameObjects/levels/level1";
 export class PlayScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_PLAY);
@@ -42,7 +38,9 @@ export class PlayScene extends Scene {
 
     this.loadData();
   
-    this._initBackgroundPortrait();
+    //this._initBackground();
+    this._initGamePlay();
+    this.resize();
     GameStateManager.registerOnStateChangedCallback(this._onGameStateChanged.bind(this));
   }
 
@@ -50,13 +48,50 @@ export class PlayScene extends Scene {
   
   }
 
+  _initBackground() {
+    let texture = Texture.from("bg");
+    this.bgPortrait = new PureSprite(texture, new PureTransform({
+      alignment               : Alignment.FULL,
+      maintainAspectRatioType : MaintainAspectRatioType.NONE,
+    }));
+    this.addChild(this.bgPortrait.displayObject);
+  }
+
+  _initGamePlay() {
+    this.gameplay = new Container();
+    this.addChild(this.gameplay);
+
+    this._initGameplayBackground();
+    this._initLevels();
+    this._initFx();
+  }
+
+  _initGameplayBackground() {
+    this.gameplayBackground = new Sprite();
+    this.gameplayBackground.anchor.set(0.5);
+    this.gameplayBackground.texture = Texture.from("1005");
+    this.gameplay.addChild(this.gameplayBackground);
+  }
+
+  _initFx() {
+    this.fxs = [];
+    this.fxContainer = new Container();
+    this.fxContainer.zIndex = 100;
+    this.gameplay.addChild(this.fxContainer);
+  }
+
+  _initLevels() {
+    this.levelManager = new LevelManager();
+    this.gameplay.addChild(this.levelManager);
+
+    let level1 = new Level1();
+    this.levelManager.addLevel(level1);
+    this.levelManager.start();
+  }
+
   show() {
     super.show();
-    this.tutorialScreen = this.ui.getScreen(GameConstant.SCREEN_TUTORIAL);
-    if (this.tutorialScreen) {
-      this.ui.setScreenActive(GameConstant.SCREEN_TUTORIAL);
-      this.loadData();
-    }
+  
   }
 
   hide() {
@@ -65,7 +100,6 @@ export class PlayScene extends Scene {
 
   update(dt) {
     super.update(dt);
-    // this.bgFx.update(dt);
     if (GameStateManager.state === GameState.Playing) {
       this.playTime += dt;
     }
@@ -97,7 +131,6 @@ export class PlayScene extends Scene {
   }
 
   _onStart() {
-    this.bgPortrait.displayObject.eventMode = "dynamic";
   }
 
   _lose() {
@@ -114,7 +147,7 @@ export class PlayScene extends Scene {
   }
 
   reInit() {  
-    this.bgPortrait.displayObject.eventMode = "none";
+    
   }
 
   _restartGame() {
@@ -129,15 +162,9 @@ export class PlayScene extends Scene {
   resize() {
     super.resize();
     
+    this.gameplay.x = GameResizer.width / 2;
+    this.gameplay.y = GameResizer.height / 2;
   }
 
-  _initBackgroundPortrait() {
-    let texture = Texture.from("bg");
-    this.bgPortrait = new PureSprite(texture, new PureTransform({
-      alignment               : Alignment.FULL,
-      maintainAspectRatioType : MaintainAspectRatioType.NONE,
-    }));
-    this.addChild(this.bgPortrait.displayObject);
-    this.bgPortrait.displayObject.eventMode = "dynamic";
-  }
+ 
 }
