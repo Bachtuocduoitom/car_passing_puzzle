@@ -1,4 +1,5 @@
 import { AnimatedSprite, Point, Texture } from "pixi.js";
+import {TextureCache} from "@pixi/utils"
 
 export class Util {
   static copyObject(src, dst = {}) {
@@ -48,6 +49,17 @@ export class Util {
     anim.animationSpeed = animationSpeed;
     anim.play();
     return anim;
+  }
+
+  /**
+   * @summary function for getting all textures contain text
+   * @param {string} textureKeys
+   */
+  static getTexturesContain(text) {
+    let keys = Object.keys(TextureCache).filter((key) => key.indexOf(text) >= 0);
+    let textures = keys.map((key) => Texture.from(key));
+    //textures.sort((a, b) => a.textureCacheIds[0].localeCompare(b.textureCacheIds[0], undefined, { numeric: true, sensitivity: 'base' }));
+    return textures;
   }
 
   static sign(num) {
