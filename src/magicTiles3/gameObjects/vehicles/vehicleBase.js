@@ -23,12 +23,13 @@ export class vehicleBase extends AnimatedSprite {
     this.direction = VehicleDirection.RIGHT;
     this.rotation = -Math.PI / 2;
     this.collider.rotation = this.rotation;
+    this.velocity = 200;
   }
 
   update(dt) {
     super.update(dt);
     if(this.state == VehicleState.RUN) {
-      this._run();
+      this._run(dt);
     }
   }
 
@@ -40,27 +41,24 @@ export class vehicleBase extends AnimatedSprite {
 
   }
 
-  onTurnLeft() {
-    if(this.state == VehicleState.RUN) { 
+  onTurnDirection(collisionTag) {
+    if (this.state == VehicleState.RUN) {
       this.state = VehicleState.CHANGEDIRECTION;
-      this._turnLeft();
-      this.emit("turnLeft");
-      console.log("turnLeft");
-    }
-  } 
-
-  onTurnRight() {
-    if(this.state == VehicleState.RUN) {
-      this.state = VehicleState.CHANGEDIRECTION;
-      this._turnRight();
-      this.emit("turnRight");
-      console.log("turnRight");
-    }
-  } 
-
-  onTurnBack() {
-    if(this.state == VehicleState.RUN) {
-      this.state = VehicleState.CHANGEDIRECTION;
+      switch(collisionTag) {
+        case CollisionTag.TurnLeftSign:
+          this._turnLeft();
+          this.emit("turnLeft");
+          console.log("turnLeft");
+          break;
+        case CollisionTag.TurnRightSign:
+          this._turnRight();
+          this.emit("turnRight");
+          console.log("turnRight");
+          break;
+        case CollisionTag.TurnBackSign:
+          this._turnBack();
+          break;
+      }
     }
   }
 
@@ -119,7 +117,6 @@ export class vehicleBase extends AnimatedSprite {
 
     preTurnLeftTween.chain(turnLeftTween);
     preTurnLeftTween.start();
-    // turnLeftTween.start();
   }
 
   _turnRight() {
@@ -174,19 +171,71 @@ export class vehicleBase extends AnimatedSprite {
     preTurnRightTween.start();
   }
 
-  _run() {
+  _turnBack() {
+    let prePosX = 0;
+    let prePosY = 0;
+    let posX = 0;
+    let posY = 0;
+    let newDirection = "";
     switch(this.direction) {
       case VehicleDirection.UP:
-        this.y -= 5;
+        prePosX = this.x;
+        prePosY = (Math.floor(this.y / 32)) * 32 - 64;
+        posX = prePosX;
+        posY = prePosY;
+        newDirection = VehicleDirection.DOWN;
         break;
       case VehicleDirection.RIGHT:
-        this.x += 5;
+        prePosX = (Math.floor(this.x / 32) + 1) * 32 + 64;
+        prePosY = this.y;
+        posX = prePosX;
+        posY = prePosY;
+        newDirection = VehicleDirection.LEFT;
         break;
       case VehicleDirection.DOWN:
-        this.y += 5;
+        prePosX = this.x;
+        prePosY = (Math.floor(this.y / 32) + 1) * 32 + 64;
+        posX = prePosX;
+        posY = prePosY;
+        newDirection = VehicleDirection.UP;
         break;
       case VehicleDirection.LEFT:
-        this.x -= 5;
+        prePosX = (Math.floor(this.x / 32)) * 32 - 64;
+        prePosY = this.y;
+        posX = prePosX;
+        posY = prePosY;
+        newDirection = VehicleDirection.RIGHT;
+        break;
+    }
+
+    const preTurnBackTween = Tween.createTween(this, {x: prePosX, y: prePosY}, {
+      duration: 0.4,
+    });
+    const turnBackTween = Tween.createTween(this, {rotation: this.rotation + Math.PI, x: posX, y: posY}, {
+      duration: 0.5,
+      onComplete: () => {
+        this.state = VehicleState.RUN;
+        this.direction = newDirection;
+      }
+    });
+
+    preTurnBackTween.chain(turnBackTween);
+    preTurnBackTween.start();
+  }
+
+  _run(dt) {
+    switch(this.direction) {
+      case VehicleDirection.UP:
+        this.y -= this.velocity * dt;
+        break;
+      case VehicleDirection.RIGHT:
+        this.x += this.velocity * dt;
+        break;
+      case VehicleDirection.DOWN:
+        this.y += this.velocity * dt;
+        break;
+      case VehicleDirection.LEFT:
+        this.x -= this.velocity * dt;
         break;
     }
   }
@@ -215,13 +264,13 @@ export class vehicleBase extends AnimatedSprite {
         this.onObstacleCollide();
         break;
       case CollisionTag.TurnLeftSign:
-        this.onTurnLeft();
+        this.onTurnDirection(CollisionTag.TurnLeftSign);
         break;
       case CollisionTag.TurnRightSign:
-        this.onTurnRight();
+        this.onTurnDirection(CollisionTag.TurnRightSign);
         break;
       case CollisionTag.TurnBackSign:
-        this.onTurnBack();
+        this.onTurnDirection(CollisionTag.TurnBackSign);
         break;
     }
   }
