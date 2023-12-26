@@ -8,16 +8,24 @@ export class Physics {
   static init(app) {
     CollisionDetector.instance.init([
       {
-        tag         : CollisionTag.Ship,
-        collideTags : [CollisionTag.Enemy, CollisionTag.EnemyBullet, CollisionTag.Booster],
+        tag         : CollisionTag.Vehicle,
+        collideTags : [CollisionTag.TurnLeftSign, CollisionTag.TurnRightSign, CollisionTag.TurnBackSign, CollisionTag.Obstacle],
       },
       {
-        tag         : CollisionTag.ShipBullet,
-        collideTags : [CollisionTag.Enemy, CollisionTag.Bounding],
+        tag         : CollisionTag.TurnLeftSign,
+        collideTags : [CollisionTag.Vehicle],
       },
       {
-        tag         : CollisionTag.EnemyBullet,
-        collideTags : [CollisionTag.Bounding],
+        tag         : CollisionTag.TurnRightSign,
+        collideTags : [CollisionTag.Vehicle],
+      },
+      {
+        tag         : CollisionTag.TurnBackSign,
+        collideTags : [CollisionTag.Vehicle],
+      },
+      {
+        tag         : CollisionTag.Obstacle,
+        collideTags : [CollisionTag.Vehicle],
       },
     ]);
 
