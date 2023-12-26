@@ -8,21 +8,19 @@ import { AssetSelector } from "../../assetSelector";
 export class DirectionSign extends Sprite {
   constructor(tag, direction) {
     super();
-    this.texture = AssetSelector.getDirectionSignTextureByTag(tag);
-    this.setDirection(direction);
-    this._initCollider(tag);
+    this.texture = AssetSelector.getDirectionSignTextureByTag(tag || "");
     this._config();
+    this._initCollider(tag || "");
+    this.setDirection(direction || "");
   }
 
   _config() {
     this.anchor.set(0.5);
-    this.collider.rotation = this.rotation;
-    this.collider.width = this.texture.width;
-    this.collider.height = this.texture.height;
   }
 
   setDirection(direction) {
     this.direction = direction;
+    this.collider.direction = direction;
     switch (direction) {
       case DirectionSignDirection.LEFT:
         this.rotation = - Math.PI / 2;
@@ -48,9 +46,13 @@ export class DirectionSign extends Sprite {
   }
 
   _initCollider(tag) {
+    if (tag == null) {
+      return;
+    }
     this.collider = new Collider(tag);
-    this.collider.direction = this.direction;
     this.collider.enabled = true; //set true to enable collider
+    this.collider.width = this.texture.width;
+    this.collider.height = this.texture.height;
     this.addChild(this.collider);
   }
 
