@@ -53,9 +53,9 @@ export class LevelBase extends Container{
     return null; // Return null for empty tiles
   }
 
-  _createDirectionSign(type = null, direction = DirectionSignDirection.RIGHT, position = null) {
+  _createDirectionSign(type = null, direction = DirectionSignDirection.RIGHT, position = null, zIndex = 0) {
     let directionSign = this.directionSignSpawner.spawnDirectionSign(type, direction, position);
-    console.log(directionSign.direction);
+    directionSign.zIndex = zIndex;
     this.directionSigns.push(directionSign);
     this.map.addChild(directionSign);
   }

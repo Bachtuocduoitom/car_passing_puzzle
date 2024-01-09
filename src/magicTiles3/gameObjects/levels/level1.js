@@ -76,8 +76,10 @@ export class Level1 extends LevelBase {
     // this.map.addChild(this.directionSign);
     
     // 32 is width and height of direction sign texture
-    let position = {x: 9 * this.tileWidth + 32 /2 - this.mapWidth * this.tileWidth / 2, y: 5 * this.tileHeight + 32 / 2 - this.mapHeight * this.tileHeight / 2};
-    this._createDirectionSign(CollisionTag.TurnRightSign, DirectionSignDirection.RIGHT, position);
+    let position1 = {x: 9 * this.tileWidth + 32 /2 - this.mapWidth * this.tileWidth / 2, y: 5 * this.tileHeight + 32 / 2 - this.mapHeight * this.tileHeight / 2};
+    let position2 = {x: 11 * this.tileWidth + 32 /2 - this.mapWidth * this.tileWidth / 2, y: 9   * this.tileHeight + 32 / 2 - this.mapHeight * this.tileHeight / 2};
+    this._createDirectionSign(CollisionTag.TurnRightSign, DirectionSignDirection.RIGHT, position1);
+    this._createDirectionSign(CollisionTag.TurnBackSign, DirectionSignDirection.DOWN, position2);
   }
   
 }
