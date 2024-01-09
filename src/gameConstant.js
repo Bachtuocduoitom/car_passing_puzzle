@@ -37,6 +37,9 @@ export const GameConstant = Object.freeze({
   SCREEN_WIN      : "WinScreen",
   SCREEN_TOP_BAR  : "TopBarScreen",
 
+  OBSTACLE_LAYER       : "Obstacle Layer",
+  PLAYER_LAYER         : "Player Layer",
+
   PROGRESS_STARS       : 3,
   GRID_LANDSCAPE_SCALE : 1,
   AUTOPLAY_TOUCH_MIN   : -50,
