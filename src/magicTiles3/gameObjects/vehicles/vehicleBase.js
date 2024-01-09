@@ -21,7 +21,7 @@ export class vehicleBase extends AnimatedSprite {
     this.anchor.set(0.5);
     this.state = VehicleState.STAY ; // permant set state to RUN need change to STAY later
     this.direction = VehicleDirection.RIGHT;
-    this.rotation = -Math.PI / 2;
+    this.rotation = - Math.PI / 2;
     this.collider.rotation = this.rotation;
     this.velocity = 200;
   }
@@ -275,4 +275,7 @@ export class vehicleBase extends AnimatedSprite {
     }
   }
   
+  setDirection(direction) {
+    this.direction = direction;
+  }
 }
