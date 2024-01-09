@@ -26,6 +26,7 @@ import { PerfectFx } from "../gameObjects/effect/perfectFx";
 import { LevelManager } from "../gameObjects/levels/levelManager";
 import { Level1 } from "../gameObjects/levels/level1";
 import { DirectionSignSpawner } from "../gameObjects/directionSigns/directionSignSpawner";
+import { Level2 } from "../gameObjects/levels/level2";
 export class PlayScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_PLAY);
@@ -62,7 +63,7 @@ export class PlayScene extends Scene {
     this.gameplay = new Container();
     this.addChild(this.gameplay);
 
-    this._initGameplayBackground();
+    // this._initGameplayBackground();
     this._initLevels();
     this._initFx();
   }
@@ -86,8 +87,12 @@ export class PlayScene extends Scene {
     this.levelManager = new LevelManager();
     this.gameplay.addChild(this.levelManager);
 
-    let level1 = new Level1(directionSignSpawner);
-    this.levelManager.addLevel(level1);
+    // let level1 = new Level1(directionSignSpawner);
+    // this.levelManager.addLevel(level1);
+
+    let level2 = new Level2(directionSignSpawner);
+
+    this.levelManager.addLevel(level2);
     this.levelManager.start();
   }
 
