@@ -7,10 +7,11 @@ import { DirectionSignDirection } from "../directionSigns/directionSignDirection
 import { CollisionTag } from "../../../physics/aabb/collisionTag";
 import { GameConstant } from "../../../gameConstant";
 import { VehicleDirection } from "../vehicles/vehicleDirection";
+import { DirectionSignsBoardEvent } from "../directionSignsBoard/directionSignsBoardEvent";
 
 export class Level2 extends LevelBase {
- constructor(directionSignSpawner) {
-    super(directionSignSpawner);
+ constructor(directionSignSpawner, levelData) {
+    super(directionSignSpawner, levelData);
     this._generateMap();
  }
 
@@ -23,16 +24,39 @@ export class Level2 extends LevelBase {
     super._config();
     this.map.scale.set(1);
 
-    this.mapWidth = level2.width;
-    this.mapHeight = level2.height;
-    this.tileWidth = level2.tilewidth;
-    this.tileHeight = level2.tileheight;
-    this.numOfLayers = level2.layers.length;
-    this.tileset = level2.tilesets[0].source;
-    this.layers = level2.layers;
+    this.mapWidth = this.levelData.width;
+    this.mapHeight = this.levelData.height;
+    this.tileWidth = this.levelData.tilewidth;
+    this.tileHeight = this.levelData.tileheight;
+    this.numOfLayers = this.levelData.layers.length;
+    this.tileset = this.levelData.tilesets[0].source;
+    this.layers = this.levelData.layers;
 
     this.tilesetTexture = Texture.from("tileset_1");
     this.tilesetTextureSize = {x: 64, y: 64};
+
+    this.directionSignsBoard.setNumOfSignItems(
+      this.levelData.numberOfTurnRightSignItems,
+      this.levelData.numberOfTurnLeftSignItems, 
+      this.levelData.numberOfTurnBackSignItems,);
+  }
+
+  start() {
+    super.start();
+    this.directionSignsBoard.on(DirectionSignsBoardEvent.ItemChoose, (tag) => {
+      this.typeOfSignOnChosen = tag;
+      console.log("typeOfSignOnChosen:", this.typeOfSignOnChosen);
+      this.noneSigns.forEach((noneSign) => {
+        noneSign.showOutline();
+      })
+    })
+
+    this.directionSignsBoard.on(DirectionSignsBoardEvent.ItemUnChoose, (tag) => {
+      this.typeOfSignOnChosen = null;
+      this.noneSigns.forEach((noneSign) => {
+        noneSign.hideOutline();
+      })
+    })
   }
 
   _generateMap() {
@@ -111,6 +135,10 @@ export class Level2 extends LevelBase {
    * 32: turn back - direction down
    * 33: turn back - direction left
    * 34: turn back - direction up
+   * 41: none - direction right
+   * 42: none - direction down
+   * 43: none - direction left
+   * 44: none - direction up
    **/
   _createDirectionSigns(layerIndex) {
     for (let row = 0; row < this.mapHeight; row++) {
@@ -155,6 +183,18 @@ export class Level2 extends LevelBase {
             break;
           case 34:
             this._createDirectionSign(CollisionTag.TurnBackSign, DirectionSignDirection.UP, position, layerIndex);            
+            break;
+          case 41:
+            this._createDirectionSign(CollisionTag.NoneSign, DirectionSignDirection.RIGHT, position, layerIndex);
+            break;
+          case 42:
+            this._createDirectionSign(CollisionTag.NoneSign, DirectionSignDirection.DOWN, position, layerIndex);
+            break;
+          case 43:
+            this._createDirectionSign(CollisionTag.NoneSign, DirectionSignDirection.LEFT, position, layerIndex);
+            break;
+          case 44:
+            this._createDirectionSign(CollisionTag.NoneSign, DirectionSignDirection.UP, position, layerIndex);
             break;
         }       
       }
