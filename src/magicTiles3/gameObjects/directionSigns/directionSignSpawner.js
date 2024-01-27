@@ -13,10 +13,16 @@ export class DirectionSignSpawner extends Container {
     this.directionSigns = [];
     this.turnLeftSignSpawner = new ContainerSpawner();
     this.turnLeftSignSpawner.init(this._createTurnLeftSign.bind(this), 10);
+
     this.turnRightSignSpawner = new ContainerSpawner();
     this.turnRightSignSpawner.init(this._createTurnRightSign.bind(this), 10);
+
     this.turnBackSignSpawner = new ContainerSpawner();
     this.turnBackSignSpawner.init(this._createTurnBackSign.bind(this), 10);
+
+    this.noneSignSpawner = new ContainerSpawner();
+    this.noneSignSpawner.init(this._createNoneSign.bind(this), 50);
+
   }
 
   spawnDirectionSign(type, direction, position) {
@@ -31,8 +37,11 @@ export class DirectionSignSpawner extends Container {
       case CollisionTag.TurnBackSign:
         directionSign = this._spawn(this.turnBackSignSpawner);
         break;
-      default:
+      case CollisionTag.NoneSign:
+        directionSign = this._spawn(this.noneSignSpawner);
         break;
+      default:
+        directionSign = this._spawn(this.noneSignSpawner);
     }
 
     if (directionSign) {
@@ -70,5 +79,8 @@ export class DirectionSignSpawner extends Container {
     return turnBackSign;
   }
 
-
+  _createNoneSign() {
+    let noneSign = new DirectionSign(CollisionTag.NoneSign);
+    return noneSign;
+  }
 }

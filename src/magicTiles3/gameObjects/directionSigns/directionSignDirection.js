@@ -3,4 +3,5 @@ export const DirectionSignDirection = Object.freeze({
   LEFT: "left",
   UP: "up",
   DOWN: "down",
+  NONE: "none",
 });
