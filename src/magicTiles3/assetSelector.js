@@ -20,8 +20,14 @@ export class AssetSelector {
         return PIXI.Texture.from("spr_turnRight");
       case CollisionTag.TurnBackSign:
         return PIXI.Texture.from("spr_turnBack");
+      case CollisionTag.NoneSign:
+        return PIXI.Texture.from("glow_blue");
       default:
         break;
     }
+  }
+
+  static getDirectionSignsBoardTexture() {
+    return PIXI.Texture.from("spr_gray_frame");
   }
 }
