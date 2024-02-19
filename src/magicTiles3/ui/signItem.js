@@ -19,12 +19,13 @@ export class SignItem extends Container {
     this.tag = tag;
     this.chosen = false;
     this.canChoose = true;
+    this.coutt = 10;
     this._initBackground();
     this._initDirectionSignSprite();
     this._initNumberText();
     this._initAnimation();
     this.resize();
-    Util.registerOnPointerDown(this, this.onclick.bind(this));
+    Util.registerOnPointerTap(this, this._onClick.bind(this));
 
   }
 
@@ -108,16 +109,18 @@ export class SignItem extends Container {
     this.playing = false;
   }
 
-  onclick() {
+  _onClick() {
     if (!this.canChoose) {
       return;
     }
-    if (!this.chosen) {
-      this.onChosen();
-      this.emit("chosen", this.tag);
-    } else {
+    if (this.chosen) {    
       this.onUnChosen();
       this.emit("unchosen", this.tag);
+      return;
+    } else {
+      this.onChosen();
+      this.emit("chosen", this.tag);
+      return;
     }
   }
 
