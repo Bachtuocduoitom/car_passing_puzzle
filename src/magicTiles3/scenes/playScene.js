@@ -27,6 +27,12 @@ import { LevelManager } from "../gameObjects/levels/levelManager";
 import { Level1 } from "../gameObjects/levels/level1";
 import { DirectionSignSpawner } from "../gameObjects/directionSigns/directionSignSpawner";
 import { Level2 } from "../gameObjects/levels/level2";
+import level2 from "../../../assets/jsons/level2.json";
+import { DirectionSignsBoard } from "../gameObjects/directionSignsBoard/directionSignsBoard";
+import { QuestionScreen, QuestionScreenEvent } from "../screens/questionScreen";
+import { ObstacleSpawner } from "../gameObjects/obstacles/obstacleSpawner";
+import { PlayScreen, PlayScreenEvent } from "../screens/playScreen";
+import { LevelEvent } from "../gameObjects/levels/levelEvent";
 export class PlayScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_PLAY);
@@ -36,7 +42,21 @@ export class PlayScene extends Scene {
   create() {
     super.create();
     this.ui.addScreens(
+      new QuestionScreen(),
+      new PlayScreen(),
     );
+    this.questionScreen = this.ui.getScreen(GameConstant.SCREEN_QUESTION);
+    // this.ui.setScreenActive(GameConstant.SCREEN_QUESTION);
+    this.questionScreen.on(QuestionScreenEvent.OnTrueAnswer, () => {
+      this._onTrueAnswer();
+    });
+    this.questionScreen.on(QuestionScreenEvent.OnFalseAnswer, () => {
+      this._onFalseAnswer();
+    });
+
+    this.playScreen = this.ui.getScreen(GameConstant.SCREEN_PLAY);
+    this.ui.setScreenActive(GameConstant.SCREEN_PLAY);
+    this.playScreen.on(PlayScreenEvent.Start, this._onStartLevel.bind(this));
 
     this.loadData();
   
@@ -61,9 +81,11 @@ export class PlayScene extends Scene {
 
   _initGamePlay() {
     this.gameplay = new Container();
+    this.gameplay.sortableChildren = true;
     this.addChild(this.gameplay);
 
     // this._initGameplayBackground();
+    this._initDirectionSignsBoard();
     this._initLevels();
     this._initFx();
   }
@@ -82,16 +104,29 @@ export class PlayScene extends Scene {
     this.gameplay.addChild(this.fxContainer);
   }
 
+  _initDirectionSignsBoard() {
+    this.directionSignsBoard = new DirectionSignsBoard();
+    this.directionSignsBoard.zIndex = 100;
+    this.directionSignsBoard.x = GameResizer.width * 1/2 - this.directionSignsBoard.width/2 -80;
+    this.directionSignsBoard.y = GameResizer.height * 1/2 - this.directionSignsBoard.height/2 - 20;
+    this.gameplay.addChild(this.directionSignsBoard);
+  }
+
   _initLevels() {
-    let directionSignSpawner = new DirectionSignSpawner(this.gameplay);
+    this.directionSignSpawner = new DirectionSignSpawner(this.gameplay);
+    this.obstacleSpawner = new ObstacleSpawner(this.gameplay);
+    
     this.levelManager = new LevelManager();
+    this.levelManager.zIndex = 10;
     this.gameplay.addChild(this.levelManager);
 
     // let level1 = new Level1(directionSignSpawner);
     // this.levelManager.addLevel(level1);
 
-    let level2 = new Level2(directionSignSpawner);
-
+    let level2 = new Level2(this.directionSignSpawner, this.obstacleSpawner, this.directionSignsBoard, DataManager.getLevelData());
+    level2.on(LevelEvent.OnVehicleCollision, () => {
+      this.ui.setScreenActive(GameConstant.SCREEN_QUESTION);
+    });
     this.levelManager.addLevel(level2);
     this.levelManager.start();
   }
@@ -165,6 +200,20 @@ export class PlayScene extends Scene {
     this.ui.disableAllScreens();
   }
 
+  _onStartLevel() {
+    this.playScreen.hideStartButton();
+    this.directionSignsBoard.hide();
+    this.levelManager.startLevelPlay();
+  }
+
+  _onTrueAnswer() {
+    this.ui.setScreenActive(GameConstant.SCREEN_QUESTION, false);
+    this.levelManager.afterTrueAnswer();
+  }
+
+  _onFalseAnswer() {
+    this.levelManager.vehicle.turnLeft();
+  }
  
   resize() {
     super.resize();
@@ -172,6 +221,5 @@ export class PlayScene extends Scene {
     this.gameplay.x = GameResizer.width / 2;
     this.gameplay.y = GameResizer.height / 2;
   }
-
  
 }
