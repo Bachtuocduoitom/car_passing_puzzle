@@ -47,7 +47,7 @@ export class DataManager {
 
 
   static getLevelData() {
-    return this.levelDatas.find((level) => level.id === this.currentSong);
+    return this.levelDatas[1];
   }
 
   static getSongDataById(id) {
