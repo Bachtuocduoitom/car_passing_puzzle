@@ -10,6 +10,6 @@ export class Taxi extends vehicleBase {
   _config() {
     super._config();
     this.collider.width = this.texture.width/2;
-    this.collider.height = this.texture.height/3;
+    this.collider.height = this.texture.width/2;
   }
 }

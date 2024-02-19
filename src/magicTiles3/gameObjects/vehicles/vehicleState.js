@@ -4,4 +4,5 @@ export const VehicleState = Object.freeze({
   DEAD: "dead",
   COLLIDE: "collide",
   CHANGEDIRECTION: "changeDirection",
+  ANSWERQUESTION: "answerQuestion",
 });
