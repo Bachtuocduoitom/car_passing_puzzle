@@ -126,6 +126,11 @@ export class Util {
     dst.y = length * Math.cos(alpha) * this.sign(vector.y);
   }
 
+  static registerOnPointerTap(displayObject, onPointerTap, context) {
+    displayObject.eventMode = "static";
+    displayObject.on("pointertap", onPointerTap, context);
+  }
+
   static registerOnPointerDown(displayObject, onPointerDown, context) {
     displayObject.eventMode = "static";
     displayObject.on("pointerdown", onPointerDown, context);
