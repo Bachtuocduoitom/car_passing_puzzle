@@ -3,4 +3,5 @@ export const LevelEvent = Object.freeze({
   Complete: "complete",
   OnVehicleDie: "onvehicledie",
   OnAddDirectionSign: "onadddirectionsign",
+  OnVehicleCollision: "onvehiclecollision",
 });

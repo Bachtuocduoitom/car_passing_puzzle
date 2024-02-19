@@ -36,6 +36,14 @@ export class LevelManager extends Container {
     level.start();
   }
 
+  startLevelPlay() {
+    this.currentLevel.startPlay();
+  }
+
+  afterTrueAnswer() {
+    this.currentLevel.vehicleContinue();
+  }
+
   _onLevelComplete() {
     Game.onOneLevelPassed();
     if (this.currentLevelIndex + 1 === this.levels.length / 2) {
