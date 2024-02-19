@@ -8,10 +8,14 @@ import { CollisionTag } from "../../../physics/aabb/collisionTag";
 import { GameConstant } from "../../../gameConstant";
 import { VehicleDirection } from "../vehicles/vehicleDirection";
 import { DirectionSignsBoardEvent } from "../directionSignsBoard/directionSignsBoardEvent";
+import { VehicleEvent } from "../vehicles/vehicleEvent";
+import { LevelEvent } from "./levelEvent";
+import { Util } from "../../../helpers/utils";
+import { PavementBrick } from "../obstacles/pavementBrick";
 
 export class Level2 extends LevelBase {
- constructor(directionSignSpawner, levelData) {
-    super(directionSignSpawner, levelData);
+ constructor(directionSignSpawner, obstacleSpawner, directionSignsBoard, levelData) {
+    super(directionSignSpawner, obstacleSpawner,directionSignsBoard, levelData);
     this._generateMap();
  }
 
@@ -64,22 +68,34 @@ export class Level2 extends LevelBase {
       if (this.layers[i].name === GameConstant.OBSTACLE_LAYER) {
         this._createDirectionSigns(i);
       } else if (this.layers[i].name === GameConstant.PLAYER_LAYER) {
-        this._createVehicle(i);
-      } else {
+        //this._createVehicle(i);
+      } else if (this.layers[i].name === "Player") {
+        this._createCar(i);
+      }else {
         this._generateMapLayer(i);
       }
     }
   }
 
   _generateMapLayer(layerIndex) {
-    // let tileValue = 0;
     let offSetX = this.mapWidth * this.tileWidth / 2;
     let offSetY = this.mapHeight * this.tileHeight / 2;
     for (let row = 0; row < this.mapHeight; row++) {
       for (let col = 0; col < this.mapWidth; col++) {
         let tileValue = this.layers[layerIndex].data[row * this.mapWidth + col];
-        let tileSprite = new Sprite(this._getTileTexture(tileValue));
+        let tileSprite;
+        if (tileValue == "2847" || tileValue == "2845" 
+          || tileValue == "2593" || tileValue == "2587" 
+          || tileValue == "2463" || tileValue == "2461" 
+          || tileValue == "2721" || tileValue == "2715") {
+          //generate pavement brick tile
+          tileSprite = new PavementBrick(CollisionTag.PavementBrick, this._getTileTexture(tileValue));
+        } else {
+          //generate normal tile
+          tileSprite = new Sprite(this._getTileTexture(tileValue));
+        }
         tileSprite.zIndex = layerIndex;
+        tileSprite.scale.set(1.05); //set scale to fill empty spaces
         tileSprite.x = col * this.tileWidth - offSetX;
         tileSprite.y = row * this.tileHeight - offSetY;  
         this.map.addChild(tileSprite);
@@ -111,14 +127,36 @@ export class Level2 extends LevelBase {
               this.taxi.rotation = Math.PI;
               break;
           }
-          this.taxi.x = col * this.tileWidth - this.mapWidth * this.tileWidth / 2;
+          this.taxi.x = col * this.tileWidth + this.tileWidth/2 - this.mapWidth * this.tileWidth / 2;
           this.taxi.y = row * this.tileHeight + this.tileHeight/2 - this.mapHeight * this.tileHeight / 2;
           this.taxi.zIndex = layerIndex;
+          this.taxi.on(VehicleEvent.CollideObstacle, (collider2) => {
+            collider2.enabled = false;
+            collider2.parent.visible = false;
+            this.emit(LevelEvent.OnVehicleCollision);
+          });
           this.map.addChild(this.taxi);   
           this.vehicles.push(this.taxi);
         }
       }
     }
+  }
+
+  _createCar(layerIndex) {
+    this.taxi = new Taxi();
+    let carData = this.layers[layerIndex].objects[0];
+    this.taxi.x = carData.x + this.tileWidth/2 - this.mapWidth * this.tileWidth / 2;
+    this.taxi.y = carData.y + this.tileHeight/2 - 32 - this.mapHeight * this.tileHeight / 2;
+    this.taxi.zIndex = layerIndex;
+    this.taxi.direction = VehicleDirection.RIGHT;
+    this.taxi.rotation = Util.toRadian(carData.rotation);
+    this.taxi.on(VehicleEvent.CollideObstacle, (collider2) => {
+      collider2.enabled = false;
+      collider2.parent.visible = false;
+      this.emit(LevelEvent.OnVehicleCollision);
+    });
+    this.map.addChild(this.taxi);
+    this.vehicles.push(this.taxi);
   }
 
   /**
@@ -196,9 +234,18 @@ export class Level2 extends LevelBase {
           case 44:
             this._createDirectionSign(CollisionTag.NoneSign, DirectionSignDirection.UP, position, layerIndex);
             break;
+          case 51:
+            this._createObstacle(position, layerIndex);
+            break;
         }       
       }
     }
+  }
+
+  startPlay() {
+    this.vehicles.forEach((vehicle) => {
+      vehicle.startRun();
+    })
   }
   
 }

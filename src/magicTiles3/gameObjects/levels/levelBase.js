@@ -8,15 +8,18 @@ import { GameResizer } from "../../../pureDynamic/systems/gameResizer";
 import { DirectionSignsBoardEvent } from "../directionSignsBoard/directionSignsBoardEvent";
 
 export class LevelBase extends Container{
-  constructor(directionSignSpawner, levelData) {
+  constructor(directionSignSpawner, obstacleSpawner, directionSignsBoard, levelData) {
     super();
     this.autoStart = true;
     /** @type {Array<Vehicle>} */
     this.vehicles = [];
+    this.obstacles = [];
     this.noneSigns = [];
     this.givenDirectionSigns = [];
     this.addedDirectionSigns = [];
     this.directionSignSpawner = directionSignSpawner;
+    this.obstacleSpawner = obstacleSpawner;
+    this.directionSignsBoard = directionSignsBoard;
     this.levelData = levelData;
     this.typeOfSignOnChosen = null;
     this._config();
@@ -33,11 +36,7 @@ export class LevelBase extends Container{
     this.map.sortableChildren = true;
     this.addChild(this.map);
 
-    this.directionSignsBoard = new DirectionSignsBoard();
-    this.directionSignsBoard.zIndex = 100;
-    this.directionSignsBoard.x = GameResizer.width * 1/2 - this.directionSignsBoard.width/2 -80;
-    this.directionSignsBoard.y = GameResizer.height * 1/2 - this.directionSignsBoard.height/2 - 20;
-    this.addChild(this.directionSignsBoard);
+    
   }
 
   start() {
@@ -80,8 +79,10 @@ export class LevelBase extends Container{
       directionSign.on("pointerdown", () => {
         if (this.typeOfSignOnChosen != null) {
           directionSign.setTag(this.typeOfSignOnChosen); // set tag for none sign
+
           this.addedDirectionSigns.push(directionSign); // add to added list
           this.noneSigns.splice(this.noneSigns.indexOf(directionSign), 1); // remove from none list
+          
           directionSign.hideOutline(); // hide outline
           directionSign.off("pointerdown"); // remove event
 
@@ -97,5 +98,18 @@ export class LevelBase extends Container{
       this.givenDirectionSigns.push(directionSign);
     }
     this.map.addChild(directionSign);
+  }
+
+  _createObstacle(position = null, zIndex = 0) {
+    let obstacle = this.obstacleSpawner.spawnObstacle(position);
+    obstacle.zIndex = zIndex;
+    this.obstacles.push(obstacle);
+    this.map.addChild(obstacle);
+  }
+
+  vehicleContinue() {
+    this.vehicles.forEach(vehicle => {
+      vehicle.onContinue();
+    });
   }
 }
