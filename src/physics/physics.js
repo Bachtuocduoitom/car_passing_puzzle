@@ -9,7 +9,7 @@ export class Physics {
     CollisionDetector.instance.init([
       {
         tag         : CollisionTag.Vehicle,
-        collideTags : [CollisionTag.TurnLeftSign, CollisionTag.TurnRightSign, CollisionTag.TurnBackSign, CollisionTag.Obstacle],
+        collideTags : [CollisionTag.TurnLeftSign, CollisionTag.TurnRightSign, CollisionTag.TurnBackSign, CollisionTag.Obstacle, CollisionTag.PavementBrick],
       },
       {
         tag         : CollisionTag.TurnLeftSign,
