@@ -47,6 +47,7 @@ export class DirectionSign extends Sprite {
   setTag(tag) {
     this.texture = AssetSelector.getDirectionSignTextureByTag(tag);
     this._initCollider(tag);
+    this.collider.direction = this.direction;
   }
 
   reset() {

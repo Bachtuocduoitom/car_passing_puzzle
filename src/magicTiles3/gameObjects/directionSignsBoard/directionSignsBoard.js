@@ -77,4 +77,12 @@ export class DirectionSignsBoard extends Container {
     this.turnBackSignBox.setNumOfSigns(numOfTurnBackSignItems);
   }
 
+  hide() {
+    this.visible = false;
+  }
+
+  show() {
+    this.visible = true;
+  }
+
 }
