@@ -36,8 +36,8 @@ export class Collider extends Sprite {
       this.getGlobalPosition(this._tmpPos);
     }
 
-    this._tmpPos.x -= this.width * this.anchor.x;
-    this._tmpPos.y -= this.height * this.anchor.y;
+    this._tmpPos.x -= this.getBounds().width * this.anchor.x;
+    this._tmpPos.y -= this.getBounds().height * this.anchor.y;
     return this._tmpPos;
   }
 

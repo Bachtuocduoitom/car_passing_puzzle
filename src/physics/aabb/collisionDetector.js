@@ -63,7 +63,7 @@ export class CollisionDetector {
     this._pos1 = collider1.getPosition();
     this._pos2 = collider2.getPosition();
     return Util.AABBCheck(
-      this._pos1.x, this._pos1.y, collider1.width, collider1.height, this._pos2.x, this._pos2.y, collider2.width, collider2.height,
+      this._pos1.x, this._pos1.y, collider1.getBounds().width, collider1.getBounds().height, this._pos2.x, this._pos2.y, collider2.getBounds().width, collider2.getBounds().height,
     );
   }
 

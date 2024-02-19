@@ -12,4 +12,5 @@ export const CollisionTag = Object.freeze({
   TurnRightSign   : "turn-right-sign",
   TurnBackSign    : "turn-back-sign",
   NoneSign        : "none-sign",
+  PavementBrick   : "pavement-brick",
 });
