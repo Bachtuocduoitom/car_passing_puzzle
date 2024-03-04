@@ -50,10 +50,16 @@ export class DirectionSign extends Sprite {
     this.collider.direction = this.direction;
   }
 
-  reset() {
-    this.collider.reset();
-    this.setDirection(DirectionSignDirection.NONE);
+  getTag() {
+    return this.collider.tag;
+  }
 
+  reset() {
+    this.setDirection(DirectionSignDirection.NONE);
+    this.hideOutline();
+
+    //remove all listeners to recycle this object
+    this.removeAllListeners();
   }
   
   _initOutline() {
@@ -72,11 +78,15 @@ export class DirectionSign extends Sprite {
   }
 
   showOutline() {
-    this.outline.visible = true;
+    if (!this.outline.visible) {
+      this.outline.visible = true;
+    }
   }
 
   hideOutline() {
-    this.outline.visible = false;
+    if (this.outline.visible) {
+      this.outline.visible = false;
+    }
   }
 
   turnOnOutline() {

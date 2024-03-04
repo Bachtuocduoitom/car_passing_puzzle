@@ -44,6 +44,7 @@ export class PlayScene extends Scene {
     this.ui.addScreens(
       new QuestionScreen(),
       new PlayScreen(),
+      new WinScreen(),
     );
     this.questionScreen = this.ui.getScreen(GameConstant.SCREEN_QUESTION);
     // this.ui.setScreenActive(GameConstant.SCREEN_QUESTION);
@@ -55,8 +56,16 @@ export class PlayScene extends Scene {
     });
 
     this.playScreen = this.ui.getScreen(GameConstant.SCREEN_PLAY);
-    this.ui.setScreenActive(GameConstant.SCREEN_PLAY);
     this.playScreen.on(PlayScreenEvent.Start, this._onStartLevel.bind(this));
+    this.playScreen.on(PlayScreenEvent.ResetLevel, this._resetLevel.bind(this));
+
+    this.winScreen = this.ui.getScreen(GameConstant.SCREEN_WIN);
+    this.ui.setScreenActive(GameConstant.SCREEN_WIN);
+    this.ui.setScreenActive(GameConstant.SCREEN_WIN, false);
+    this.winScreen.on(WinScreenEvent.NextLevel, this._onNextLevel.bind(this));
+    this.winScreen.on(WinScreenEvent.Replay, this._restartGame.bind(this));
+    this.winScreen.on(WinScreenEvent.BackHome, this._onBackHome.bind(this));
+
 
     this.loadData();
   
@@ -85,6 +94,7 @@ export class PlayScene extends Scene {
     this.addChild(this.gameplay);
 
     // this._initGameplayBackground();
+    this._initBlackScreen();
     this._initDirectionSignsBoard();
     this._initLevels();
     this._initFx();
@@ -97,18 +107,29 @@ export class PlayScene extends Scene {
     this.gameplay.addChild(this.gameplayBackground);
   }
 
+  _initBlackScreen() {
+    let texture = Texture.WHITE;
+    this.blackScreen =  new PureSprite(texture, new PureTransform({
+      alignment               : Alignment.FULL,
+      maintainAspectRatioType : MaintainAspectRatioType.NONE,
+    }));
+    this.blackScreen.displayObject.tint = 0x000000;
+    this.blackScreen.displayObject.zIndex = 200;
+    this.addChild(this.blackScreen.displayObject);
+  }
+
   _initFx() {
     this.fxs = [];
     this.fxContainer = new Container();
     this.fxContainer.zIndex = 100;
     this.gameplay.addChild(this.fxContainer);
+
+    this._initChangeSceneFx();
   }
 
   _initDirectionSignsBoard() {
     this.directionSignsBoard = new DirectionSignsBoard();
     this.directionSignsBoard.zIndex = 100;
-    this.directionSignsBoard.x = GameResizer.width * 1/2 - this.directionSignsBoard.width/2 -80;
-    this.directionSignsBoard.y = GameResizer.height * 1/2 - this.directionSignsBoard.height/2 - 20;
     this.gameplay.addChild(this.directionSignsBoard);
   }
 
@@ -122,18 +143,59 @@ export class PlayScene extends Scene {
 
     // let level1 = new Level1(directionSignSpawner);
     // this.levelManager.addLevel(level1);
+    // this._newLevel();
+    
+  }
 
+  _newLevel() {
     let level2 = new Level2(this.directionSignSpawner, this.obstacleSpawner, this.directionSignsBoard, DataManager.getLevelData());
-    level2.on(LevelEvent.OnVehicleCollision, () => {
+
+    //level emit vehicle collision with obstacle
+    level2.on(LevelEvent.OnVehicleCollisionWithObstacle, (collider) => {
+      this.playScreen.hideResetButton();
       this.ui.setScreenActive(GameConstant.SCREEN_QUESTION);
+      this.questionScreen.setQuestion(level2.getObstacleQuestionData());
     });
+
+    //level emit vehicle collision with star
+    level2.on(LevelEvent.OnVehicleCollisionWithStar, (collider) => {
+      this.playScreen.hideResetButton();
+      this.ui.setScreenActive(GameConstant.SCREEN_QUESTION);
+      this.questionScreen.setQuestion(level2.getStarQuestionData());
+    });
+
+    //level emit vehicle collision with goal
+    level2.on(LevelEvent.OnVehicleCollisionWithGoal, (numOfStarCollected) => {
+      this.winScreen.setTextureForStars(numOfStarCollected);
+      this.ui.setScreenActive(GameConstant.SCREEN_WIN);
+
+    });
+
+    level2.on(LevelEvent.OnVehicleDie, () => {
+      this.playScreen.hideResetButton();
+    });
+
+    level2.on(LevelEvent.Complete, () => {
+      this._win();
+    });
+
+    level2.on(LevelEvent.LevelFail, () => {
+      this._lose();
+    });
+
     this.levelManager.addLevel(level2);
     this.levelManager.start();
+
+    this.ui.setScreenActive(GameConstant.SCREEN_PLAY);
   }
 
   show() {
     super.show();
-  
+    
+    this._playChangeSceneInFx();
+    this._newLevel();
+    this.directionSignsBoard.show();
+    this.playScreen.showStartButton();
   }
 
   hide() {
@@ -179,6 +241,8 @@ export class PlayScene extends Scene {
     if (GameConstant.CHEAT_IMMORTAL) {
       return;
     }
+
+    this.ui.setScreenActive(GameConstant.SCREEN_WIN);
     Game.onLose();
     GameStateManager.state = GameState.Lose;
   }
@@ -189,30 +253,86 @@ export class PlayScene extends Scene {
   }
 
   reInit() {  
-    
+    this.levelManager.destroyLevelPlay();
   }
 
   _restartGame() {
-    this.ui.disableAllScreens();
+    Tween.createTween(this.blackScreen.displayObject, { alpha: 1 }, {
+      duration    : 0.2,
+      delay       : 0.1,
+      onComplete  : () => {
+        this.ui.disableAllScreens();
+        // this.ui.setScreenActive(GameConstant.SCREEN_WIN, false);
+        this.levelManager.resetLevelPlay();
+        
+        this.ui.setScreenActive(GameConstant.SCREEN_PLAY);
+        this.playScreen.showStartButton();
+
+        this._playChangeSceneInFx();
+      }
+    }).start();
   }
 
   _onBackHome() {
+    this._playChangeSceneOutFx(this._loadHomeScene.bind(this));
+  }
+
+  _loadHomeScene() {
     this.ui.disableAllScreens();
+    this.reInit();
+    GameStateManager.state = GameState.Home;
+    let homeScene = SceneManager.getScene(GameConstant.SCENE_HOME);
+    SceneManager.load(homeScene);
+    SceneManager.unload(this);
+  }
+
+  _onNextLevel() {
+    
+    this._loadNextLevel();
+
+  }
+
+  _loadNextLevel() {
+    
+    Tween.createTween(this.blackScreen.displayObject, { alpha: 1 }, {
+      duration    : 0.2,
+      delay       : 0.1,
+      onComplete  : () => {
+        this.ui.disableAllScreens();
+        this.reInit();
+        this._newLevel();
+        this.directionSignsBoard.show();
+        this.playScreen.showStartButton();
+
+        this._playChangeSceneInFx();
+      }
+    }).start();
   }
 
   _onStartLevel() {
     this.playScreen.hideStartButton();
-    this.directionSignsBoard.hide();
+    this.playScreen.showResetButton();
+
     this.levelManager.startLevelPlay();
+  }
+
+  _resetLevel() {
+    this.playScreen.showStartButton();
+    this.playScreen.hideResetButton();
+
+    this.levelManager.resetLevelPlay();
   }
 
   _onTrueAnswer() {
     this.ui.setScreenActive(GameConstant.SCREEN_QUESTION, false);
+    this.playScreen.showResetButton();
     this.levelManager.afterTrueAnswer();
   }
 
   _onFalseAnswer() {
-    this.levelManager.vehicle.turnLeft();
+    this.ui.setScreenActive(GameConstant.SCREEN_QUESTION, false);
+    this.playScreen.showResetButton();
+    this.levelManager.afterFalseAnswer();
   }
  
   resize() {
@@ -220,6 +340,35 @@ export class PlayScene extends Scene {
     
     this.gameplay.x = GameResizer.width / 2;
     this.gameplay.y = GameResizer.height / 2;
+
+    this.directionSignsBoard.x = GameResizer.width * 1/2 - this.directionSignsBoard.width/2 -80;
+    this.directionSignsBoard.y = GameResizer.height * 1/2 - this.directionSignsBoard.height/2 - 20;
+  }
+
+  _initChangeSceneFx() {
+    this.changeSceneInFx = Tween.createTween(this.blackScreen.displayObject, { alpha: 0 }, {
+      duration    : 0.2,
+      delay       : 0.1,
+      onComplete  : () => {
+      }
+    });
+
+    this.fxs.push(this.changeSceneInFx);
+  }
+
+  _playChangeSceneInFx() {
+    this.blackScreen.displayObject.alpha = 1;
+    this.changeSceneInFx.start();
+  }
+
+  _playChangeSceneOutFx(callBackFunction) {
+    Tween.createTween(this.blackScreen.displayObject, { alpha: 1 }, {
+      duration    : 0.3,
+      delay       : 0.1,
+      onComplete  : () => {
+        callBackFunction();
+      }
+    }).start();
   }
  
 }

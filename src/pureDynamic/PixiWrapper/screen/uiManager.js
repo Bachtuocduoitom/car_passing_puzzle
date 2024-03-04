@@ -64,7 +64,7 @@ export class UIManager extends Container {
   }
 
   disableAllScreens() {
-    this.screens.forEach((screen) => screen.visible = false);
+    this.screens.forEach((screen) => screen.hide());
   }
 
   getScreen(key) {

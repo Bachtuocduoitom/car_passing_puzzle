@@ -12,10 +12,11 @@ import { UserData } from "../data/userData";
 import { DataLocal } from "../data/dataLocal";
 import { Texture } from "pixi.js";
 import { PureTransform } from "../../pureDynamic/core/pureTransform";
-import { Alignment } from "../../pureDynamic/core/pureTransformConfig";
+import { Alignment, MaintainAspectRatioType } from "../../pureDynamic/core/pureTransformConfig";
 import { PureSprite } from "../../pureDynamic/PixiWrapper/pureSprite";
+import { Tween } from "../../systems/tween/tween";
 export const HomeSceneEvent = Object.freeze({
-  ChooseLevel: "ChooseLevel",
+  Play : "play",
 });
 export class HomeScene extends Scene {
   constructor() {
@@ -32,10 +33,7 @@ export class HomeScene extends Scene {
 
   show() {
     super.show();
-    this.homeScreen = this.ui.getScreen(GameConstant.SCREEN_HOME);
-    if (this.homeScreen) {
-
-    }
+    
   }
 
   create() {
@@ -43,6 +41,13 @@ export class HomeScene extends Scene {
     this.ui.addScreens(
       new HomeScreen(),
     );
+    this.homeScreen = this.ui.getScreen(GameConstant.SCREEN_HOME);
+    this.homeScreen.on(HomeScreenEvent.PlayButtonSelected, () => {
+      this.emit(HomeSceneEvent.Play);
+    });
+
+    this.ui.setScreenActive(GameConstant.SCREEN_HOME);
+
     this._initBackground();
   }
 
@@ -55,14 +60,7 @@ export class HomeScene extends Scene {
   }
 
   _initBackground() {
-    let bgPortraitTexture = Texture.from("bg_portrait");
-    let portraitTransform = new PureTransform({
-      alignment: Alignment.FULL,
-    });
-    this.portraitBg = new PureSprite(bgPortraitTexture, portraitTransform);
-    this.addChild(this.portraitBg.displayObject);
-
-    let bgLandscapeTexture = Texture.from("bg_portrait");
+    let bgLandscapeTexture = Texture.from("background_homeScene");
     let landscapeTransform = new PureTransform({
       alignment: Alignment.FULL,
     });

@@ -1,0 +1,138 @@
+{
+  "obstacleQuestion" : [
+    {
+      "id": 1,
+      "name": "question 1",
+      "question" :"Phần của đường bộ đươc sử dụng \ncho các phương tiện giao thông qua lại là gì?",
+      "answer": [
+        {
+          "id": 1,
+          "content": "Phần mặt đường và lề đường",
+          "correct": true
+        },
+        {
+          "id": 2,
+          "content": "Phần đường xe chạy",
+          "correct": false
+        },
+        {
+          "id": 3,
+          "content": "Phần đường xe cơ giới",
+          "correct": false
+        }
+      ]
+    }, 
+    {
+      "id": 2,
+      "name": "question 2",
+      "question" :"“Làn đường” là gì?",
+      "answer": [
+        {
+          "id": 1,
+          "content": "Là một phần của phần đường xe chạy được chai theo chiều dọc của đường, sử dụng cho xe chạy.",
+          "correct": false
+        },
+        {
+          "id": 2,
+          "content": "Là một phần của phần đường xe chạy được chia theo chiều dọc của đường, có bề rộng đủ cho xe chạy an toàn",
+          "correct": true
+        },
+        {
+          "id": 3,
+          "content": "Là một phần của phần đường xe chạy được chia theo chiều dọc của đường, có đủ bề rộng cho xe ô tô chạy an toàn",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "question 3",
+      "question" :"Khi gặp biển nào thì người lái xe không được quay đầu xe?",
+      "answer": [
+        {
+          "id": 1,
+          "content": "Biển 1",
+          "correct": false
+        },
+        {
+          "id": 2,
+          "content": "Biển 2",
+          "correct": true
+        },
+        {
+          "id": 3,
+          "content": "Biển 3",
+          "correct": false
+        }
+      ]
+    }
+  ],
+  "starQuestion" : [
+    {
+      "id": 1,
+      "name": "question 1",
+      "question" :"Phần của đường bộ đươc sử dụng \ncho các phương tiện giao thông qua lại là gì?",
+      "answer": [
+        {
+          "id": 1,
+          "content": "Phần mặt đường và lề đường",
+          "correct": true
+        },
+        {
+          "id": 2,
+          "content": "Phần đường xe chạy",
+          "correct": false
+        },
+        {
+          "id": 3,
+          "content": "Phần đường xe cơ giới",
+          "correct": false
+        }
+      ]
+    }, 
+    {
+      "id": 2,
+      "name": "question 2",
+      "question" :"“Làn đường” là gì?",
+      "answer": [
+        {
+          "id": 1,
+          "content": "Là một phần của phần đường xe chạy được chai theo chiều dọc của đường, sử dụng cho xe chạy.",
+          "correct": false
+        },
+        {
+          "id": 2,
+          "content": "Là một phần của phần đường xe chạy được chia theo chiều dọc của đường, có bề rộng đủ cho xe chạy an toàn",
+          "correct": true
+        },
+        {
+          "id": 3,
+          "content": "Là một phần của phần đường xe chạy được chia theo chiều dọc của đường, có đủ bề rộng cho xe ô tô chạy an toàn",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "question 3",
+      "question" :"Khi gặp biển nào thì người lái xe không được quay đầu xe?",
+      "answer": [
+        {
+          "id": 1,
+          "content": "Biển 1",
+          "correct": false
+        },
+        {
+          "id": 2,
+          "content": "Biển 2",
+          "correct": true
+        },
+        {
+          "id": 3,
+          "content": "Biển 3",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

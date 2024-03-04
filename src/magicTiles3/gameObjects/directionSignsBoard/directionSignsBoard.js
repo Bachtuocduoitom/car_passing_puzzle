@@ -32,6 +32,7 @@ export class DirectionSignsBoard extends Container {
   }
 
   _initDirectionSignBoxes() {
+    //turn right box
     this.turnRightSignBox = new SignItem(CollisionTag.TurnRightSign);
     this.turnRightSignBox.pivot.set(0.5);
     this.turnRightSignBox.x = -this.board.width / 2 + 50;
@@ -39,6 +40,7 @@ export class DirectionSignsBoard extends Container {
     this.addChild(this.turnRightSignBox);
     this.directionSignBoxes.push(this.turnRightSignBox);
 
+    //turn left box
     this.turnLeftSignBox = new SignItem(CollisionTag.TurnLeftSign);
     this.turnLeftSignBox.on("chosen", () => {})
     this.turnLeftSignBox.pivot.set(0.5);
@@ -47,6 +49,7 @@ export class DirectionSignsBoard extends Container {
     this.addChild(this.turnLeftSignBox);
     this.directionSignBoxes.push(this.turnLeftSignBox);
 
+    //turn back box
     this.turnBackSignBox = new SignItem(CollisionTag.TurnBackSign);
     this.turnBackSignBox.x = this.board.width / 2 - 50 - this.turnBackSignBox.width;
     this.turnBackSignBox.y = -this.turnBackSignBox.height / 2;
@@ -72,9 +75,13 @@ export class DirectionSignsBoard extends Container {
   }
 
   setNumOfSignItems(numOfTurnRightSignItems, numOfTurnLeftSignItems, numOfTurnBackSignItems) {
+    this.directionSignBoxes.forEach((box) => {
+      box.reset();
+    });
+    
     this.turnRightSignBox.setNumOfSigns(numOfTurnRightSignItems);
     this.turnLeftSignBox.setNumOfSigns(numOfTurnLeftSignItems);
-    this.turnBackSignBox.setNumOfSigns(numOfTurnBackSignItems);
+    this.turnBackSignBox.setNumOfSigns(numOfTurnBackSignItems);    
   }
 
   hide() {

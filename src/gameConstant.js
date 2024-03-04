@@ -8,7 +8,7 @@ export const GameConstant = Object.freeze({
   CHEAT_ONE_NOTE          : false,
   GAME_WIDTH              : 720,
   GAME_HEIGHT             : 1280,
-  BG_COLOR                : 0x000000,
+  BG_COLOR                : 0x63c5da,
   GAME_LIFE               : 1,
   SOUND_ENABLED           : true,
   SHOW_BUTTON_SOUND       : false,
@@ -32,18 +32,30 @@ export const GameConstant = Object.freeze({
 
   SCREEN_HOME     : "HomeScreen",
   SCREEN_LOADING  : "LoadingScreen",
+  SCREEN_PLAY     : "PlayScreen",
   SCREEN_TUTORIAL : "TutorialScreen",
   SCREEN_LOSE     : "LoseScreen",
   SCREEN_WIN      : "WinScreen",
   SCREEN_TOP_BAR  : "TopBarScreen",
+  SCREEN_QUESTION : "QuestionScreen",
 
   OBSTACLE_LAYER       : "Obstacle Layer",
   PLAYER_LAYER         : "Player Layer",
+
+  DIRECTION_SIGN_SIZE : 32,
+  DIRECTION_SIGN_BAR_WIDTH  : 682,
+  DIRECTION_SIGN_BAR_HEIGHT : 150,
+
+  DIRECTION_SIGN_ITEM_SIZE : 100,
+
+  TILE_SIZE : 32, 
 
   PROGRESS_STARS       : 3,
   GRID_LANDSCAPE_SCALE : 1,
   AUTOPLAY_TOUCH_MIN   : -50,
   AUTOPLAY_TOUCH_MAX   : 50,
+
+  EXPLOSION_ANIMATION_SPEED : 0.2,
 
   COLUMN_COUNT       : 4,
   BEAT_POS           : 1300,

@@ -30,4 +30,20 @@ export class AssetSelector {
   static getDirectionSignsBoardTexture() {
     return PIXI.Texture.from("spr_gray_frame");
   }
+
+  static getObstacleTexture() {
+    return PIXI.Texture.from("spr_stone");
+  }
+
+  static getStarTexture() {
+    return PIXI.Texture.from("spr_star_active");
+  }
+
+  static getGoalTexture() {
+    return PIXI.Texture.from("spr_finish_line");
+  }
+
+  static getExplosionTextures() {
+    return Util.getTexturesContain(`48x48 - ClusterExplosionFrame`);
+  }
 }

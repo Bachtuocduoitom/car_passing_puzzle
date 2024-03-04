@@ -4,6 +4,7 @@ import level3 from "../../../assets/jsons/level3.json";
 import level4 from "../../../assets/jsons/level4.json";
 import level5 from "../../../assets/jsons/level5.json";
 import songData from "../../../assets/jsons/songData.json";
+import level2Questions from "../../../assets/jsons/level2Questions.json";
 import { DataLocal } from "./dataLocal";
 import { UserData } from "./userData";
 import inventoryItemData from "../../../assets/jsons/inventoryItemData.json";
@@ -17,6 +18,8 @@ export class DataManager {
     this.levelDatas.push(level5);
     this.songsData = songData;
     this.inventoryItemData = inventoryItemData;
+    this.levelQuestionsDatas =[];
+    this.levelQuestionsDatas.push(level2Questions);
     this.currentSong = DataLocal.currentSong;
     UserData.init();
     this.filterInventoryData();
@@ -48,6 +51,10 @@ export class DataManager {
 
   static getLevelData() {
     return this.levelDatas[1];
+  }
+
+  static getLevelQuestionsData() {
+    return this.levelQuestionsDatas[0];
   }
 
   static getSongDataById(id) {

@@ -68,8 +68,15 @@ export class Game {
       new PlayScene(this.app),
       new PauseScene(),
       new LoadingScene(),
+      new HomeScene()
     ]);
     this.app.stage.addChild(SceneManager.sceneContainer);
+
+    let homeScene = SceneManager.getScene(GameConstant.SCENE_HOME);
+    homeScene.on(HomeSceneEvent.Play, () => {
+      let playScene = SceneManager.getScene(GameConstant.SCENE_PLAY);
+      SceneManager.load(playScene);
+    });
 
     let playScene = SceneManager.getScene(GameConstant.SCENE_PLAY);
     // SceneManager.load(playScene);
@@ -77,7 +84,8 @@ export class Game {
     let loadingScene = SceneManager.getScene(GameConstant.SCENE_LOADING);
     SceneManager.load(loadingScene);
     loadingScene.on(LoadingSceneEvent.LoadCompleted, () => {
-      SceneManager.load(playScene);
+      // SceneManager.load(playScene);
+      SceneManager.load(homeScene);
     });
 
     let pauseScene = SceneManager.getScene(GameConstant.SCENE_PAUSE);

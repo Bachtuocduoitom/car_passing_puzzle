@@ -6,14 +6,18 @@ import { CollisionTag } from "../../../physics/aabb/collisionTag";
 import { DirectionSignsBoard } from "../directionSignsBoard/directionSignsBoard";
 import { GameResizer } from "../../../pureDynamic/systems/gameResizer";
 import { DirectionSignsBoardEvent } from "../directionSignsBoard/directionSignsBoardEvent";
+import { UserData } from "../../data/userData";
+import { DataManager } from "../../data/dataManager";
 
 export class LevelBase extends Container{
   constructor(directionSignSpawner, obstacleSpawner, directionSignsBoard, levelData) {
     super();
     this.autoStart = true;
     /** @type {Array<Vehicle>} */
+    this.numOfStarCollected = 0;
     this.vehicles = [];
     this.obstacles = [];
+    this.stars = [];
     this.noneSigns = [];
     this.givenDirectionSigns = [];
     this.addedDirectionSigns = [];
@@ -21,7 +25,11 @@ export class LevelBase extends Container{
     this.obstacleSpawner = obstacleSpawner;
     this.directionSignsBoard = directionSignsBoard;
     this.levelData = levelData;
+    this.levelQuestionsData = DataManager.getLevelQuestionsData();
     this.typeOfSignOnChosen = null;
+
+    //doi tuong vehicle dang va cham
+    this.initialCollideWithVehicle = null;
     this._config();
   }
 
@@ -74,17 +82,18 @@ export class LevelBase extends Container{
     directionSign.zIndex = zIndex;
     directionSign.eventMode = "static";
 
-    if (type == CollisionTag.NoneSign) {
+    if (type === CollisionTag.NoneSign) {
       this.noneSigns.push(directionSign);
       directionSign.on("pointerdown", () => {
-        if (this.typeOfSignOnChosen != null) {
+        //check if type of sign on chosen is Not Null and this direction sign still None Sign
+        if (this.typeOfSignOnChosen != null && directionSign.getTag() === CollisionTag.NoneSign) { 
           directionSign.setTag(this.typeOfSignOnChosen); // set tag for none sign
 
           this.addedDirectionSigns.push(directionSign); // add to added list
           this.noneSigns.splice(this.noneSigns.indexOf(directionSign), 1); // remove from none list
           
           directionSign.hideOutline(); // hide outline
-          directionSign.off("pointerdown"); // remove event
+          
 
           this.directionSignsBoard.emit(DirectionSignsBoardEvent.HandleAfterAddSign, this.typeOfSignOnChosen);
           this.noneSigns.forEach((noneSign) => {
@@ -107,9 +116,53 @@ export class LevelBase extends Container{
     this.map.addChild(obstacle);
   }
 
-  vehicleContinue() {
+  _createStarAtPostion(position = null, zIndex = 0) {
+    let star = this.obstacleSpawner.spawnStar(position);
+    star.zIndex = zIndex;
+    this.stars.push(star);
+    this.map.addChild(star);
+  }
+
+  handleTrueAnswer() {
     this.vehicles.forEach(vehicle => {
       vehicle.onContinue();
     });
+    if (this.initialCollideWithVehicle?.tag == CollisionTag.Star) {
+      this.numOfStarCollected++;
+      
+    }
+    this.initialCollideWithVehicle.parent.visible = false;
+    this.initialCollideWithVehicle.enabled = false;
+    this.initialCollideWithVehicle = null;
+  }
+
+  handleFalseAnswer() {
+    console.log(this.initialCollideWithVehicle.tag);
+    if (this.initialCollideWithVehicle?.tag == CollisionTag.Obstacle) {
+      this.vehicles.forEach(vehicle => {
+        vehicle.onDie();
+        this.emit(LevelEvent.OnVehicleDie);
+      });
+      this.initialCollideWithVehicle = null;
+    } else if (this.initialCollideWithVehicle?.tag == CollisionTag.Star) {
+      this.vehicles.forEach(vehicle => {
+        vehicle.onContinue();
+      });
+      this.initialCollideWithVehicle.parent.isSkipped();
+      this.initialCollideWithVehicle = null;
+    }
+    
+  }
+
+  getObstacleQuestionData() {
+    return this.levelQuestionsData.obstacleQuestion[0];
+  }
+
+  getStarQuestionData() {
+    return this.levelQuestionsData.starQuestion[0];
+  }
+
+  getNumOfStarCollected() {
+    return this.numOfStarCollected;
   }
 }

@@ -1,3 +1,7 @@
 export const VehicleEvent = Object.freeze({
-  CollideObstacle: "collideObstacle",
+  CollidePavementBrick  : "collidePavementBrick",
+  CollideObstacle       : "collideObstacle",
+  CollideStar           : "collideStar",
+  CollideGoal           : "collideGoal",
+  CompleteDie           : "completeDie",
 });

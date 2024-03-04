@@ -8,6 +8,8 @@ export const CollisionTag = Object.freeze({
   Booster         : "booster",
   Vehicle         : "vehicle",
   Obstacle        : "obstacle",
+  Star            : "star",
+  Goal            : "goal",
   TurnLeftSign    : "turn-left-sign",
   TurnRightSign   : "turn-right-sign",
   TurnBackSign    : "turn-back-sign",

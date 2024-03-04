@@ -13,6 +13,9 @@ import { DataLocal } from "../data/dataLocal";
 import { Util } from "../../helpers/utils";
 import { SoundManager } from "../../soundManager";
 import { Tween } from "../../systems/tween/tween";
+import { AnswerBottom4 } from "../ui/answerBottom4";
+import { AnswerBottom3 } from "../ui/answerBottom3";
+import { AnswerBottom2 } from "../ui/answerBottom2";
 
 export const QuestionScreenEvent = Object.freeze({
   OnTrueAnswer: "ontrueanswer",
@@ -22,8 +25,7 @@ export const QuestionScreenEvent = Object.freeze({
 export class QuestionScreen extends UIScreen {
   constructor() {
     super(GameConstant.SCREEN_QUESTION);
-    this.buttons = [];
-    this.answers = [];
+    this.bottoms = [];
   }
 
   create() {
@@ -40,6 +42,7 @@ export class QuestionScreen extends UIScreen {
 
   hide() {
     super.hide();
+    this.bottoms.forEach(bottom => bottom.hide());
   }
 
   _initBackground() {
@@ -77,9 +80,10 @@ export class QuestionScreen extends UIScreen {
 
     this.questionText = new Text("SCORE", {
       fontFamily: "Arial",
-      fontSize: 100,
+      fontSize: 140,
       fill: "black",
-      align: "center",
+      align: "left",
+      bold: true,
     });
     this.questionText.anchor.set(0.5);
     this.questionText.position.set(0, this.questionTable.displayObject.height);
@@ -87,75 +91,44 @@ export class QuestionScreen extends UIScreen {
   }
 
   _initAnswersCard() {
-    let bottomTexture = Texture.from("spr_transparent");
-    let pTransform = new PureTransform({
-      alignment               : Alignment.BOTTOM_CENTER,
-      x                       : 0,
-      y                       : -GameResizer.height/6,
-      usePercent              : true,
-      width                   : 0.33,
-      height                  : 0.08,
-      maintainAspectRatioType : MaintainAspectRatioType.MIN,
-    });
-    let lTransform = new PureTransform({
-      alignment              : Alignment.BOTTOM_CENTER,
-      x                       : 0,
-      y                       : -GameResizer.height/6,
-      usePercent              : true,
-      width                   : 0.13,
-      height                  : 0.1,
-      maintainAspectRatioType : MaintainAspectRatioType.MIN,
-    });
-    this.bottom = new PureSprite(bottomTexture, pTransform, lTransform);
-    this.addChild(this.bottom.displayObject);
+    this.bottomAnswers4 = new AnswerBottom4();
+    this.addChild(this.bottomAnswers4);
+    this.bottoms.push(this.bottomAnswers4);
 
-    let answerTexture = Texture.from("spr_small_answer");
-    for(let i=0; i<4; i++) {
-      let answerCard = new Sprite(answerTexture);
-      answerCard.anchor.set(0.5);
-      answerCard.scale.set(0.3);
-      this.bottom.displayObject.addChild(answerCard);
-      this.answers.push(answerCard);
-      Util.registerOnPointerDown(answerCard, this._onAnswer.bind(this, i));
-    }
+    this.bottomAnswers3 = new AnswerBottom3();
+    this.addChild(this.bottomAnswers3);
+    this.bottoms.push(this.bottomAnswers3);
+
+    this.bottomAnswers2 = new AnswerBottom2();
+    this.addChild(this.bottomAnswers2);
+    this.bottoms.push(this.bottomAnswers2);
     
   }
 
   resize() {
     super.resize();
-    for(let i=0; i<this.answers.length; i++) {
-      switch(i) {
-        case 0:
-          this.answers[i].position.set(-GameResizer.width/7, 0);
-          break;
-        case 1:
-          this.answers[i].position.set(GameResizer.width/7, 0);
-          break;
-        case 2:
-          this.answers[i].position.set(-GameResizer.width/7, -GameResizer.height/4);
-          break;
-        case 3:
-          this.answers[i].position.set(GameResizer.width/7, -GameResizer.height/4);
-          break;
-      }
+    this.bottomAnswers4.resize();
+    this.bottomAnswers3.resize();
+    this.bottomAnswers2.resize();
+  }
+
+  setQuestion(questionData) {
+    this.questionText.text = questionData.question;
+    this.bottoms.forEach(bottom => bottom.hide());
+    switch(questionData.answer.length) {
+      case 2:
+        this.bottomAnswers2.show();
+        this.bottomAnswers2.setQuestion(questionData.answer);
+        break;
+      case 3:
+        this.bottomAnswers3.show();
+        this.bottomAnswers3.setQuestion(questionData.answer);
+        break;
+      case 4:
+        this.bottomAnswers4.show();
+        this.bottomAnswers4.setQuestion(questionData.answer);
+        break;
     }
   }
-
-  disableAllButton() {
-    this.buttons.forEach(button => {
-      button.eventMode = "none";
-    });
-  }
-
-  enableAllButton() {
-    this.buttons.forEach(button => {
-      button.eventMode = "static";
-    });
-  }
-
-  _onAnswer(index) {
-    this.emit(QuestionScreenEvent.OnTrueAnswer);
-  }
-
 
 }

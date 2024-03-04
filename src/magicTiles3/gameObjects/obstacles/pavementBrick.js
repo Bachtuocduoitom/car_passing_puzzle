@@ -17,7 +17,7 @@ export class PavementBrick extends Sprite {
   }
 
   reset() {
-    this.collider.reset();
+    
   }
   
   _initCollider(tag) {

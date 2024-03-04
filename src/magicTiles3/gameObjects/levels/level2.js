@@ -12,10 +12,11 @@ import { VehicleEvent } from "../vehicles/vehicleEvent";
 import { LevelEvent } from "./levelEvent";
 import { Util } from "../../../helpers/utils";
 import { PavementBrick } from "../obstacles/pavementBrick";
+import { Goal } from "../obstacles/goal";
 
 export class Level2 extends LevelBase {
  constructor(directionSignSpawner, obstacleSpawner, directionSignsBoard, levelData) {
-    super(directionSignSpawner, obstacleSpawner,directionSignsBoard, levelData);
+    super(directionSignSpawner, obstacleSpawner, directionSignsBoard, levelData);
     this._generateMap();
  }
 
@@ -71,7 +72,11 @@ export class Level2 extends LevelBase {
         //this._createVehicle(i);
       } else if (this.layers[i].name === "Player") {
         this._createCar(i);
-      }else {
+      } else if (this.layers[i].name === "Stars") {
+        this._createStars(i);
+      } else if (this.layers[i].name === "Goal") {
+        this._createGoal(i);
+      } else {
         this._generateMapLayer(i);
       }
     }
@@ -145,19 +150,62 @@ export class Level2 extends LevelBase {
   _createCar(layerIndex) {
     this.taxi = new Taxi();
     let carData = this.layers[layerIndex].objects[0];
-    this.taxi.x = carData.x + this.tileWidth/2 - this.mapWidth * this.tileWidth / 2;
-    this.taxi.y = carData.y + this.tileHeight/2 - 32 - this.mapHeight * this.tileHeight / 2;
-    this.taxi.zIndex = layerIndex;
-    this.taxi.direction = VehicleDirection.RIGHT;
-    this.taxi.rotation = Util.toRadian(carData.rotation);
+    let position = {x: carData.x + this.tileWidth/2 - this.mapWidth * this.tileWidth / 2, 
+                    y: carData.y + this.tileHeight/2 - 32 - this.mapHeight * this.tileHeight / 2};
+
+    this.taxi.setInitialState(position, VehicleDirection.RIGHT, carData.rotation, layerIndex);
+
+    //collide with obstacle
     this.taxi.on(VehicleEvent.CollideObstacle, (collider2) => {
-      collider2.enabled = false;
-      collider2.parent.visible = false;
-      this.emit(LevelEvent.OnVehicleCollision);
+      this.initialCollideWithVehicle = collider2;
+      this.emit(LevelEvent.OnVehicleCollisionWithObstacle);
     });
+
+    //collide with pavementBrick
+    this.taxi.on(VehicleEvent.CollidePavementBrick, (collider2) => {
+      this.initialCollideWithVehicle = collider2;
+      this.emit(LevelEvent.OnVehicleDie);
+    });
+
+    //collide with star
+    this.taxi.on(VehicleEvent.CollideStar, (collider2) => {
+      this.initialCollideWithVehicle = collider2;
+      this.emit(LevelEvent.OnVehicleCollisionWithStar);
+    });
+
+    //collide with goal
+    this.taxi.on(VehicleEvent.CollideGoal, (collider2) => {
+      this.emit(LevelEvent.OnVehicleCollisionWithGoal, this.numOfStarCollected);
+    });
+
+    //complete die
+    this.taxi.on(VehicleEvent.CompleteDie, () => {
+      this.emit(LevelEvent.LevelFail);
+    });
+
     this.map.addChild(this.taxi);
     this.vehicles.push(this.taxi);
+    console.log("vehicles:", this.vehicles);
   }
+
+  _createStars(layerIndex) {
+    for (let i = 0; i < this.layers[layerIndex].objects.length; i++) {
+      let starData = this.layers[layerIndex].objects[i];
+      let position = {x: starData.x + this.tileWidth/2 - this.mapWidth * this.tileWidth / 2, 
+                      y: starData.y + this.tileHeight/2 - 32 - this.mapHeight * this.tileHeight / 2};
+      this._createStarAtPostion(position, layerIndex);
+    }
+  }
+
+  _createGoal(layerIndex) {
+    let goalData = this.layers[layerIndex].objects[0];
+    this.goal = new Goal(CollisionTag.Goal);
+    this.goal.x = goalData.x + this.tileWidth/2 - this.mapWidth * this.tileWidth / 2;
+    this.goal.y = goalData.y + this.tileHeight/2 - 32 - this.mapHeight * this.tileHeight / 2;
+    this.goal.zIndex = layerIndex;
+    this.map.addChild(this.goal);
+  }
+
 
   /**
    * code for directionSigns:
@@ -182,7 +230,8 @@ export class Level2 extends LevelBase {
     for (let row = 0; row < this.mapHeight; row++) {
       for (let col = 0; col < this.mapWidth; col++) {
         let tileValue = this.layers[layerIndex].data[row * this.mapWidth + col];
-        let position = {x: col * this.tileWidth + 32 / 2 - this.mapWidth * this.tileWidth / 2, y: row * this.tileHeight + 32 / 2 - this.mapHeight * this.tileHeight / 2}; 
+        let position = {x: col * this.tileWidth + 32 / 2 - this.mapWidth * this.tileWidth / 2, 
+                        y: row * this.tileHeight + 32 / 2 - this.mapHeight * this.tileHeight / 2}; 
         switch (tileValue) {
           case 0:
             break;
@@ -246,6 +295,87 @@ export class Level2 extends LevelBase {
     this.vehicles.forEach((vehicle) => {
       vehicle.startRun();
     })
+    this.directionSignsBoard.hide();
+    this.noneSigns.forEach((noneSign) => {
+      noneSign.hideOutline();
+    })
+  }
+
+  reset() {
+    this.numOfStarCollected = 0;
+    this.typeOfSignOnChosen = null;
+    this.initialCollideWithVehicle = null;
+
+    this.vehicles.forEach((vehicle) => {
+      vehicle.resetInitialState();
+    });
+
+    this.obstacles.forEach((obstacle) => {
+      obstacle.resetInitialState();
+    });
+
+    this.stars.forEach((star) => {
+      star.resetInitialState();
+    });
+
+    for (let i = this.addedDirectionSigns.length - 1; i >= 0; i--) {
+      let addedDirectionSign = this.addedDirectionSigns[i];
+      addedDirectionSign.setTag(CollisionTag.NoneSign);
+      addedDirectionSign.hideOutline();
+      this.addedDirectionSigns.splice(i, 1);
+      this.noneSigns.push(addedDirectionSign);
+    }
+
+    //Reset directionSignsBoard
+    this.directionSignsBoard.setNumOfSignItems(
+      this.levelData.numberOfTurnRightSignItems,
+      this.levelData.numberOfTurnLeftSignItems, 
+      this.levelData.numberOfTurnBackSignItems,);
+
+      this.directionSignsBoard.show();
+  }
+
+  destroySelf() {
+    this.vehicles.forEach((vehicle) => {
+      vehicle.reset();
+      this.map.removeChild(vehicle);
+    });
+
+    this.obstacles.forEach((obstacle) => {
+      obstacle.reset();
+      this.obstacleSpawner.deSpawnObstacle(obstacle);
+      // this.obstacles.splice(this.obstacles.indexOf(obstacle), 1);
+    });
+
+    this.stars.forEach((star) => {
+      star.reset();
+      this.obstacleSpawner.deSpawnStar(star);
+      // this.stars.splice(this.stars.indexOf(star), 1);
+    });
+
+    for (let i = this.addedDirectionSigns.length - 1; i >= 0; i--) {
+      let addedDirectionSign = this.addedDirectionSigns[i];
+      addedDirectionSign.setTag(CollisionTag.NoneSign);
+      this.addedDirectionSigns.splice(i, 1);
+      this.noneSigns.push(addedDirectionSign);
+    }
+
+    for (let i = this.noneSigns.length - 1; i >= 0; i--) {
+      let noneSign = this.noneSigns[i];
+      noneSign.hideOutline();
+      noneSign.reset();
+      this.directionSignSpawner.despawnDirectionSign(noneSign);
+      this.noneSigns.splice(i, 1);
+    }
+
+    this.givenDirectionSigns.forEach((givenDirectionSign) => {
+      givenDirectionSign.reset();
+      this.directionSignSpawner.despawnDirectionSign(givenDirectionSign);
+      this.givenDirectionSigns.splice(this.givenDirectionSigns.indexOf(givenDirectionSign), 1);
+    });
+
+    this.emit(LevelEvent.Complete);
+    this.removeAllListeners();
   }
   
 }

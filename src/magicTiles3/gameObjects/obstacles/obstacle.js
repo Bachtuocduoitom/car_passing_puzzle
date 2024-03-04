@@ -15,11 +15,20 @@ export class Obstacle extends Sprite {
 
   _config() {
     this.anchor.set(0.5);  
-    this.scale.set(0.4);
+    // this.scale.set(0.4);
   }
 
   reset() {
-    this.collider.reset();
+    this.collider.enabled = true;
+    this.visible = true;
+    
+    //remove all listeners to recycle this object
+    this.removeAllListeners();
+  }
+
+  resetInitialState() {
+    this.collider.enabled = true;
+    this.visible = true;
   }
   
   _initCollider(tag) {

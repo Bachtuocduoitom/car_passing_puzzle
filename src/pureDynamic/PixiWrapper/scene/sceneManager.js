@@ -42,13 +42,13 @@ export class SceneManager {
     this.additiveScenes = [];
     let oldScene = this.currentScene;
     this.currentScene = scene;
-    this.currentScene.show();
     if (!this.currentScene.isCreated) {
       this.currentScene.create();
     }
     if (oldScene) {
       oldScene.hide();
     }
+    this.currentScene.show();
   }
 
   /**

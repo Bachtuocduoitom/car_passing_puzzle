@@ -14,7 +14,8 @@ import { DataLocal } from "../data/dataLocal";
 import { Util } from "../../helpers/utils";
 import { Tween } from "../../systems/tween/tween";
 export const PlayScreenEvent = Object.freeze({
-  Start : "Start",
+  Start       : "start",
+  ResetLevel : "resetlevel",
 });
 
 export class PlayScreen extends UIScreen {
@@ -25,6 +26,7 @@ export class PlayScreen extends UIScreen {
   create() {
     super.create();
     this._initStartButton();
+    this._initResetButton();
    
   }
 
@@ -67,6 +69,29 @@ export class PlayScreen extends UIScreen {
       yoyo     : true,
     }).start();
   }
+
+  _initResetButton() {
+    let resetButtonTexture = Texture.from("spr_reset_button");
+    let pTransform = new PureTransform({
+      alignment               : Alignment.TOP_LEFT,
+      x                       : 20,
+      y                       : 20,
+      width                   : resetButtonTexture * 0.05,
+      height                  : resetButtonTexture * 0.05,
+      
+    });
+    let lTransform = new PureTransform({
+      alignment               : Alignment.TOP_LEFT,
+      x                       : 20,
+      y                       : 20,
+      width                   : resetButtonTexture.width * 0.8,
+      height                  : resetButtonTexture.height * 0.8,
+    });
+    this.resetButton = new PureSprite(resetButtonTexture, pTransform, lTransform);
+    this.resetButton.displayObject.visible = false;
+    this.addChild(this.resetButton.displayObject);
+    Util.registerOnPointerDown(this.resetButton.displayObject, this._onResetLevel.bind(this));
+  }
   
   
   resize() {
@@ -78,7 +103,23 @@ export class PlayScreen extends UIScreen {
     this.emit(PlayScreenEvent.Start);
   }
 
+  _onResetLevel() {
+    this.emit(PlayScreenEvent.ResetLevel);
+  }
+
   hideStartButton() {
     this.startButton.displayObject.visible = false;
+  }
+
+  showStartButton() {
+    this.startButton.displayObject.visible = true;
+  }
+
+  hideResetButton() {
+    this.resetButton.displayObject.visible = false;
+  }
+
+  showResetButton() {
+    this.resetButton.displayObject.visible = true;
   }
 }

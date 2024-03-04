@@ -14,12 +14,10 @@ import { GameConstant } from "../../gameConstant";
 export class SignItem extends Container {
   constructor(tag) {
     super();
-    this.playing = false;
     this.score = 0;
     this.tag = tag;
     this.chosen = false;
     this.canChoose = true;
-    this.coutt = 10;
     this._initBackground();
     this._initDirectionSignSprite();
     this._initNumberText();
@@ -38,21 +36,12 @@ export class SignItem extends Container {
   }
 
   playAnimation() {
-    this.tweenFadeIn.start();
+    
   }
 
-  playUpdateScoreAimation() {
-    this.tweemUpdateScore?.stop();
-    this.tweemUpdateScore.start();
-  }
-
-  stopUpdateScoreAnimation() {
-    this.tweemUpdateScore?.stop();
-  }
 
   stopAnimation() {
-    this.alpha = 0;
-    this.playing = false;
+    
   }
 
   resize() { 
@@ -105,10 +94,6 @@ export class SignItem extends Container {
 
   }
 
-  _onAnimationComplete() {
-    this.playing = false;
-  }
-
   _onClick() {
     if (!this.canChoose) {
       return;
@@ -158,5 +143,14 @@ export class SignItem extends Container {
     this.canChoose = false;
     this.alpha = 0.5;
     this.directionSignSprite.alpha = 0.5;
+  }
+
+  reset() {
+    this.alpha = 1;
+    this.directionSignSprite.alpha = 1;
+    this.canChoose = true;
+    this.score = 0;
+    this.numberText.text = `${this.score}`;
+    this.onUnChosen();
   }
 }

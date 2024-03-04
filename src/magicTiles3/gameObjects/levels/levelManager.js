@@ -13,7 +13,8 @@ export class LevelManager extends Container {
   }
 
   start() {
-    this._checkNextLevel();
+    // this._checkNextLevel();
+    this.startLevel(this.currentLevel);
   }
 
   _checkNextLevel() {
@@ -40,8 +41,22 @@ export class LevelManager extends Container {
     this.currentLevel.startPlay();
   }
 
+  resetLevelPlay() {
+    this.currentLevel.reset();
+  }
+
+  destroyLevelPlay() {
+    this.currentLevel.destroySelf();
+    this.removeChild(this.currentLevel);
+    this.currentLevel = null;
+  }
+
   afterTrueAnswer() {
-    this.currentLevel.vehicleContinue();
+    this.currentLevel.handleTrueAnswer();
+  }
+
+  afterFalseAnswer() {
+    this.currentLevel.handleFalseAnswer();
   }
 
   _onLevelComplete() {
@@ -51,7 +66,7 @@ export class LevelManager extends Container {
     }
 
     if (this.currentLevelIndex >= this.levels.length - 1) {
-      this.emit(WaveEvent.Complete);
+      this.emit(LevelEvent.Complete);
     }
     else {
       this.currentLevelIndex++;
@@ -74,6 +89,7 @@ export class LevelManager extends Container {
 
   addLevel(level) {
     level.visible = false; //hide level
+    this.currentLevel = level;
     this.addChild(level);
     this.levels.push(level);
   }

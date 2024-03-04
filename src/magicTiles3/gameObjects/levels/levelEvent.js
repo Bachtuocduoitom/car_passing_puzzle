@@ -1,7 +1,11 @@
 export const LevelEvent = Object.freeze({
   Start: "start",
   Complete: "complete",
+  LevelFail: "levelfail",
   OnVehicleDie: "onvehicledie",
   OnAddDirectionSign: "onadddirectionsign",
-  OnVehicleCollision: "onvehiclecollision",
+  OnVehicleCollisionWithGoal: "onvehiclecollisionwithgoal",
+  OnVehicleCollisionWithStar: "onvehiclecollisionwithstar",
+  OnVehicleCollisionWithObstacle: "onvehiclecollisionwithobstacle",
+  OnVehicleCollisionWithPavementBrick: "onvehiclecollisionwithpavementbrick",
 });

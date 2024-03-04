@@ -53,6 +53,25 @@ export class DirectionSignSpawner extends Container {
     } 
   }
 
+  despawnDirectionSign(directionSign) {
+    switch(directionSign.getTag()) {
+      case CollisionTag.TurnLeftSign:
+        this._despawn(this.turnLeftSignSpawner, directionSign);
+        break;
+      case CollisionTag.TurnRightSign:
+        this._despawn(this.turnRightSignSpawner, directionSign);
+        break;
+      case CollisionTag.TurnBackSign:
+        this._despawn(this.turnBackSignSpawner, directionSign);
+        break;
+      case CollisionTag.NoneSign:
+        this._despawn(this.noneSignSpawner, directionSign);
+        break;
+      default:
+        this._despawn(this.noneSignSpawner, directionSign);
+    }
+  }
+
   _spawn(spawner) {
     let directionSign = spawner.spawn();
     this.directionSigns.push(directionSign);
