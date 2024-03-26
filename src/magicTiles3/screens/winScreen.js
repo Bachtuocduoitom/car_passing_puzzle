@@ -4,7 +4,7 @@ import { UIScreen } from "../../pureDynamic/PixiWrapper/screen/uiScreen";
 import { GameResizer } from "../../pureDynamic/systems/gameResizer";
 import { Game } from "../../game";
 import { DataManager } from "../data/dataManager";
-import { Container, Graphics, Sprite, TextStyle, Texture } from "pixi.js";
+import { Container, Graphics, Sprite, Text, TextStyle, Texture } from "pixi.js";
 import { PureTransform } from "../../pureDynamic/core/pureTransform";
 import { Alignment, MaintainAspectRatioType } from "../../pureDynamic/core/pureTransformConfig";
 import { PureSprite } from "../../pureDynamic/PixiWrapper/pureSprite";
@@ -27,14 +27,17 @@ export class WinScreen extends UIScreen {
 
   create() {
     super.create();
-    this.numOfStars = 3;
+    this.numOfStars = 5;
+    this.tweenDuration = 0.5;
     this.buttonYPosition = 350;
+    this.buttonYEndLevelPosition = 720;
     this.stars = [];
     this.buttons = [];
     this.fxs = [];
     this._initBackground();
     this._initOrangeBoard();
     this._initStars();
+    this._initTotalScoreText();
     this._initButtons();
     this._initFxs();
   }
@@ -89,16 +92,31 @@ export class WinScreen extends UIScreen {
 
     
     //set stars position
-    this.stars[0].position.set(-350, -250);
-    this.stars[1].position.set(0, -350);
-    this.stars[1].scale.set(1.2);
-    this.stars[2].position.set(350, -250);
+    this.stars[0].position.set(-450, -250);
+    this.stars[1].position.set(-200, -100);
+    this.stars[2].position.set(0, -350);
+    this.stars[3].position.set(200, -100);
+    this.stars[4].position.set(450, -250);
 
     this._setStarsToInitialScale();
     this._setStarsToInitialTexture();
     this._setStarsToInvisible();
-    
+  
+  }
 
+  _initTotalScoreText() {
+    this.totalScoreText = new Text("Total Score: 0/35", {
+      fontFamily: "Comic Sans MS",
+      fontSize: 90,
+      fill: "white",
+      stroke: "black",
+      strokeThickness: 10,
+      fontWeight: "bold",
+    });
+    this.totalScoreText.x = -150;
+    this.totalScoreText.y = 200;
+    this.totalScoreText.anchor.set(0.5);
+    this.orangeBoard.displayObject.addChild(this.totalScoreText);
   }
 
   _initButtons() {
@@ -127,44 +145,65 @@ export class WinScreen extends UIScreen {
 
   _initFxs() {
     this.star1ZoomInTween = Tween.createTween(this.stars[0], { scale: {x: 1, y: 1} }, {
-      duration : 0.5,
+      duration : this.tweenDuration,
       easing     :  Tween.Easing.Back.Out,
       onStart : () => {
         this.stars[0].visible = true;
       },
-      onComplete : () => {
-        
-      },
     });
 
-    this.star2ZoomInTween = Tween.createTween(this.stars[1], { scale: {x: 1.2, y: 1.2} }, {
-      duration : 0.5,
+    this.star2ZoomInTween = Tween.createTween(this.stars[1], { scale: {x: 0.9, y: 0.9} }, {
+      duration : this.tweenDuration,
       easing     :  Tween.Easing.Back.Out,
       onStart : () => {
         this.stars[1].visible = true;
       },
-      onComplete : () => {
-        
-      },
     });
 
-    this.star3ZoomInTween = Tween.createTween(this.stars[2], { scale: {x: 1, y: 1} }, {
-      duration : 0.5,
-      easing     : Tween.Easing.Back.Out,
+    this.star3ZoomInTween = Tween.createTween(this.stars[2], { scale: {x: 1.2, y: 1.2} }, {
+      duration : this.tweenDuration,
+      easing     :  Tween.Easing.Back.Out,
       onStart : () => {
         this.stars[2].visible = true;
       },
-      onComplete : () => {
-        
+    });
+
+    this.star4ZoomInTween = Tween.createTween(this.stars[3], { scale: {x: 0.9, y: 0.9} }, {
+      duration : this.tweenDuration,
+      easing     :  Tween.Easing.Back.Out,
+      onStart : () => {
+        this.stars[3].visible = true;
+      },
+    });
+
+    this.star5ZoomInTween = Tween.createTween(this.stars[4], { scale: {x: 1, y: 1} }, {
+      duration : this.tweenDuration,
+      easing     : Tween.Easing.Back.Out,
+      onStart : () => {
+        this.stars[4].visible = true;
+      },
+    });
+
+    this.totalScoreTextZoomInTween = Tween.createTween(this.totalScoreText, { scale: {x: 1, y: 1} }, {
+      duration : this.tweenDuration,
+      delay : this.tweenDuration * 5,
+      easing     : Tween.Easing.Back.Out,
+      onStart : () => {
+        this.totalScoreText.visible = true;
       },
     });
 
     this.fxs.push(this.star1ZoomInTween);
     this.fxs.push(this.star2ZoomInTween);
     this.fxs.push(this.star3ZoomInTween);
+    this.fxs.push(this.star4ZoomInTween);
+    this.fxs.push(this.star5ZoomInTween);
+    this.fxs.push(this.totalScoreTextZoomInTween);
     
     this.star1ZoomInTween.chain(this.star2ZoomInTween);
     this.star2ZoomInTween.chain(this.star3ZoomInTween);
+    this.star3ZoomInTween.chain(this.star4ZoomInTween);
+    this.star4ZoomInTween.chain(this.star5ZoomInTween);
   }
 
   resize() {
@@ -192,8 +231,22 @@ export class WinScreen extends UIScreen {
 
   _setStarsToInitialScale() {
     this.stars[0].scale.set(0.2);
-    this.stars[1].scale.set(0.3);
-    this.stars[2].scale.set(0.2);
+    this.stars[1].scale.set(0.2);
+    this.stars[2].scale.set(0.3);
+    this.stars[3].scale.set(0.2);
+    this.stars[4].scale.set(0.2);
+  }
+
+  _setButtonsToInitialPosition() {
+    this.homeButton.position.set(-400, this.buttonYPosition);
+    this.replayButton.position.set(0, this.buttonYPosition);
+    this.continueButton.position.set(400, this.buttonYPosition);
+  }
+
+  _setButtonsToLevelEndPosition() {
+    this.homeButton.position.set(-400, this.buttonYEndLevelPosition);
+    this.replayButton.position.set(0, this.buttonYEndLevelPosition);
+    this.continueButton.position.set(400, this.buttonYEndLevelPosition);
   }
 
   _setStarsToInvisible() {
@@ -209,12 +262,12 @@ export class WinScreen extends UIScreen {
   }
 
   _playStarsZoomInTween() {
-    this.star1ZoomInTween.start();
+    this.star1ZoomInTween?.start();
   }
 
   _stopStarsZoomInTween() {
-    this.fxs.forEach(starZoomInTween => {
-      starZoomInTween?.stop();
+    this.fxs.forEach(fx => {
+      fx?.stop();
     });
   }
 
@@ -223,5 +276,21 @@ export class WinScreen extends UIScreen {
     for (let i = 0; i < numOfStarCollected; i++) {
       this.stars[i].texture = this.orangeStarTexture;     
     }
+  }
+
+  setupForLevelComplete(isLevelEnd, numOfStarCollected) {
+    if (isLevelEnd) {
+      let totalScore = DataManager.getLevelTotalScore();
+      this.totalScoreText.visible = false;
+      this.totalScoreText.scale.set(0.5);
+      this.totalScoreTextZoomInTween?.start();
+      this.totalScoreText.text = `Total Score: ${totalScore}/35`;
+      this._setButtonsToLevelEndPosition();
+    } else {
+      this.totalScoreText.visible = false;
+      this._setButtonsToInitialPosition();
+    }
+
+    this.setTextureForStars(numOfStarCollected);
   }
 }

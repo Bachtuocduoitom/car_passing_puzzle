@@ -27,6 +27,20 @@ export class Collider extends Sprite {
     CollisionDetector.instance.remove(this);
   }
 
+  newDestroy() {
+    this.mask = null,
+    this.cullArea = null,
+    this.filters = null,
+    this.filterArea = null,
+    this.hitArea = null,
+    this.eventMode = "auto",
+    this.interactiveChildren = !1,
+    this.emit("destroyed"),
+    this.removeAllListeners();
+    this.enabled = false;
+    CollisionDetector.instance.remove(this);
+  }
+
   getPosition() {
     if (this._tmpPos) {
       this.getGlobalPosition(this._tmpPos, true);

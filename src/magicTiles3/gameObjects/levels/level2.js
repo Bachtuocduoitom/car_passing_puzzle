@@ -95,6 +95,7 @@ export class Level2 extends LevelBase {
           || tileValue == "2721" || tileValue == "2715") {
           //generate pavement brick tile
           tileSprite = new PavementBrick(CollisionTag.PavementBrick, this._getTileTexture(tileValue));
+          this.tileBrick.push(tileSprite);
         } else {
           //generate normal tile
           tileSprite = new Sprite(this._getTileTexture(tileValue));
@@ -109,51 +110,13 @@ export class Level2 extends LevelBase {
     }
   }
 
-  _createVehicle(layerIndex) {
-    for (let row = 0; row < this.mapHeight; row++) {
-      for (let col = 0; col < this.mapWidth; col++) {
-        let tileValue = this.layers[layerIndex].data[row * this.mapWidth + col];
-        if (tileValue !== 0) {
-          this.taxi = new Taxi();
-          switch(tileValue) {
-            case 1:
-              this.taxi.direction = VehicleDirection.RIGHT;
-              this.taxi.rotation = - Math.PI / 2;
-              break;
-            case 2:
-              this.taxi.direction = VehicleDirection.DOWN;
-              break;
-            case 3:
-              this.taxi.direction = VehicleDirection.LEFT;
-              this.taxi.rotation = Math.PI / 2;
-              break;
-            case 4:
-              this.taxi.direction = VehicleDirection.UP;
-              this.taxi.rotation = Math.PI;
-              break;
-          }
-          this.taxi.x = col * this.tileWidth + this.tileWidth/2 - this.mapWidth * this.tileWidth / 2;
-          this.taxi.y = row * this.tileHeight + this.tileHeight/2 - this.mapHeight * this.tileHeight / 2;
-          this.taxi.zIndex = layerIndex;
-          this.taxi.on(VehicleEvent.CollideObstacle, (collider2) => {
-            collider2.enabled = false;
-            collider2.parent.visible = false;
-            this.emit(LevelEvent.OnVehicleCollision);
-          });
-          this.map.addChild(this.taxi);   
-          this.vehicles.push(this.taxi);
-        }
-      }
-    }
-  }
-
   _createCar(layerIndex) {
     this.taxi = new Taxi();
     let carData = this.layers[layerIndex].objects[0];
     let position = {x: carData.x + this.tileWidth/2 - this.mapWidth * this.tileWidth / 2, 
                     y: carData.y + this.tileHeight/2 - 32 - this.mapHeight * this.tileHeight / 2};
 
-    this.taxi.setInitialState(position, VehicleDirection.RIGHT, carData.rotation, layerIndex);
+    this.taxi.setInitialState(position, carData.rotation, layerIndex);
 
     //collide with obstacle
     this.taxi.on(VehicleEvent.CollideObstacle, (collider2) => {
@@ -372,6 +335,11 @@ export class Level2 extends LevelBase {
       givenDirectionSign.reset();
       this.directionSignSpawner.despawnDirectionSign(givenDirectionSign);
       this.givenDirectionSigns.splice(this.givenDirectionSigns.indexOf(givenDirectionSign), 1);
+    });
+
+    this.tileBrick.forEach((tile) => {
+      tile.removeCollider();
+      this.map.removeChild(tile);
     });
 
     this.emit(LevelEvent.Complete);

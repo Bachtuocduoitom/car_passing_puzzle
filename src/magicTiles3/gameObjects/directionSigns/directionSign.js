@@ -46,6 +46,7 @@ export class DirectionSign extends Sprite {
 
   setTag(tag) {
     this.texture = AssetSelector.getDirectionSignTextureByTag(tag);
+    this.removeCollider();
     this._initCollider(tag);
     this.collider.direction = this.direction;
   }
@@ -113,5 +114,13 @@ export class DirectionSign extends Sprite {
     this.collider.height = GameConstant.DIRECTION_SIGN_SIZE;
     this.addChild(this.collider);
   }
+
+  removeCollider() {
+    if (this.collider) {
+      this.collider.newDestroy();
+      this.removeChild(this.collider);
+    }
+  }
+  
 
 }

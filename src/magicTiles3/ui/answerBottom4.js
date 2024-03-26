@@ -31,6 +31,7 @@ export class AnswerBottom4 extends Container {
 
   hide() {
     this.visible = false;
+    this.answers.forEach(answer => answer.reset());
   }
 
   _initAnswersCard() {
@@ -58,8 +59,9 @@ export class AnswerBottom4 extends Container {
 
     for(let i = 0; i < this.numberOfAnswer; i++) {
       let answerCard = new AnswerUI();
+      answerCard.setText((i+1).toString());
       answerCard.anchor.set(0.5);
-      answerCard.scale.set(0.3);
+      answerCard.scale.set(0.8);
       this.bottom.displayObject.addChild(answerCard);
       this.answers.push(answerCard);
       Util.registerOnPointerDown(answerCard, this._onAnswer.bind(this, i));
@@ -71,16 +73,16 @@ export class AnswerBottom4 extends Container {
     for(let i=0; i<this.answers.length; i++) {
       switch(i) {
         case 0:
-          this.answers[i].position.set(-GameResizer.width/7, -GameResizer.height/4);
-          break;
-        case 1:
-          this.answers[i].position.set(GameResizer.width/7, 0-GameResizer.height/4);
-          break;
-        case 2:
-          this.answers[i].position.set(-GameResizer.width/7, 0);
+          this.answers[i].position.set(-GameResizer.width * 3 / 8, 40);
           break;
         case 3:
-          this.answers[i].position.set(GameResizer.width/7, 0);
+          this.answers[i].position.set(GameResizer.width * 3 / 8, 40);
+          break;
+        case 1:
+          this.answers[i].position.set(-GameResizer.width/8, 40);
+          break;
+        case 2:
+          this.answers[i].position.set(GameResizer.width/8, 40);
           break;
       }
     }
@@ -88,15 +90,28 @@ export class AnswerBottom4 extends Container {
 
   _onAnswer(index) {
     if (this.answers[index].correct) {
-      this.parent.emit(QuestionScreenEvent.OnTrueAnswer);
+      this.answers[index].onTrueAnswer();
+
+      Tween.createCountTween({
+        duration: 0.5,
+        onComplete: () => {
+          this.parent.emit(QuestionScreenEvent.OnTrueAnswer);
+        },
+      }).start();
     } else {
-      this.parent.emit(QuestionScreenEvent.OnFalseAnswer);
+      this.answers[index].onFalseAnswer();
+
+      Tween.createCountTween({
+        duration: 0.5,
+        onComplete: () => {
+          this.parent.emit(QuestionScreenEvent.OnFalseAnswer);
+        },
+      }).start();
     }
   }
 
   setQuestion(answerData) {
     for(let i=0; i<3; i++) {
-      this.answers[i].setText(answerData[i].content);
       this.answers[i].correct = answerData[i].correct;
     }
   }

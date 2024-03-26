@@ -8,13 +8,15 @@ import { GameResizer } from "../../../pureDynamic/systems/gameResizer";
 import { DirectionSignsBoardEvent } from "../directionSignsBoard/directionSignsBoardEvent";
 import { UserData } from "../../data/userData";
 import { DataManager } from "../../data/dataManager";
+import { Util } from "../../../helpers/utils";
 
-export class LevelBase extends Container{
+export class LevelBase extends PIXI.Container{
   constructor(directionSignSpawner, obstacleSpawner, directionSignsBoard, levelData) {
     super();
     this.autoStart = true;
     /** @type {Array<Vehicle>} */
     this.numOfStarCollected = 0;
+    this.tileBrick = [];
     this.vehicles = [];
     this.obstacles = [];
     this.stars = [];
@@ -43,8 +45,6 @@ export class LevelBase extends Container{
     this.map = new Container();
     this.map.sortableChildren = true;
     this.addChild(this.map);
-
-    
   }
 
   start() {
@@ -155,11 +155,12 @@ export class LevelBase extends Container{
   }
 
   getObstacleQuestionData() {
-    return this.levelQuestionsData.obstacleQuestion[0];
+    let randomQuestion = Util.randomInt(0, this.levelQuestionsData.obstacleQuestion.length - 1);
+    return this.levelQuestionsData.obstacleQuestion[randomQuestion];
   }
 
   getStarQuestionData() {
-    return this.levelQuestionsData.starQuestion[0];
+    return this.levelQuestionsData.starQuestion[Util.randomInt(0, this.levelQuestionsData.starQuestion.length - 1)];
   }
 
   getNumOfStarCollected() {

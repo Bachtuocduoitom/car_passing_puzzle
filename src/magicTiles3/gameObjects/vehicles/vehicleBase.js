@@ -139,6 +139,7 @@ export class vehicleBase extends AnimatedSprite {
     if (this.state == VehicleState.RUN) {
       this.state = VehicleState.DEAD;
       this.emit(VehicleEvent.CollidePavementBrick, collider2);
+      console.log(collider2.parent.parent.parent === this.parent.parent);
       this._die();
     }
   }
@@ -412,10 +413,23 @@ export class vehicleBase extends AnimatedSprite {
     this.direction = direction;
   }
 
-  setInitialState(position = {x: 0, y: 0}, direction = VehicleDirection.RIGHT, rotation = 0, layerIndex = 0) {
+  setInitialState(position = {x: 0, y: 0}, rotation = 0, layerIndex = 0) {
     this.initialPosition = position;
-    this.initialDirection = direction;
     this.initialRotation = Util.toRadian(rotation);
+    switch(rotation) {
+      case 0:
+        this.initialDirection = VehicleDirection.DOWN;
+        break;
+      case 90:
+        this.initialDirection = VehicleDirection.LEFT;
+        break;
+      case 180:
+        this.initialDirection = VehicleDirection.UP;
+        break;
+      case -90:
+        this.initialDirection = VehicleDirection.RIGHT;
+        break;
+    }
     this.initialLayerIndex = layerIndex;
 
     this.resetInitialState();   

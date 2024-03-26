@@ -33,6 +33,7 @@ import { QuestionScreen, QuestionScreenEvent } from "../screens/questionScreen";
 import { ObstacleSpawner } from "../gameObjects/obstacles/obstacleSpawner";
 import { PlayScreen, PlayScreenEvent } from "../screens/playScreen";
 import { LevelEvent } from "../gameObjects/levels/levelEvent";
+import { LoseScreen, LoseScreenEvent } from "../screens/loseScreen";
 export class PlayScene extends Scene {
   constructor() {
     super(GameConstant.SCENE_PLAY);
@@ -42,9 +43,10 @@ export class PlayScene extends Scene {
   create() {
     super.create();
     this.ui.addScreens(
-      new QuestionScreen(),
       new PlayScreen(),
+      new QuestionScreen(),
       new WinScreen(),
+      new LoseScreen(),
     );
     this.questionScreen = this.ui.getScreen(GameConstant.SCREEN_QUESTION);
     // this.ui.setScreenActive(GameConstant.SCREEN_QUESTION);
@@ -65,6 +67,10 @@ export class PlayScene extends Scene {
     this.winScreen.on(WinScreenEvent.NextLevel, this._onNextLevel.bind(this));
     this.winScreen.on(WinScreenEvent.Replay, this._restartGame.bind(this));
     this.winScreen.on(WinScreenEvent.BackHome, this._onBackHome.bind(this));
+
+    this.LoseScreen = this.ui.getScreen(GameConstant.SCREEN_LOSE);
+    this.LoseScreen.on(LoseScreenEvent.Replay, this._restartGame.bind(this));
+    this.LoseScreen.on(LoseScreenEvent.BackHome, this._onBackHome.bind(this));
 
 
     this.loadData();
@@ -93,18 +99,10 @@ export class PlayScene extends Scene {
     this.gameplay.sortableChildren = true;
     this.addChild(this.gameplay);
 
-    // this._initGameplayBackground();
     this._initBlackScreen();
     this._initDirectionSignsBoard();
     this._initLevels();
     this._initFx();
-  }
-
-  _initGameplayBackground() {
-    this.gameplayBackground = new Sprite();
-    this.gameplayBackground.anchor.set(0.5);
-    this.gameplayBackground.texture = Texture.from("1005");
-    this.gameplay.addChild(this.gameplayBackground);
   }
 
   _initBlackScreen() {
@@ -166,21 +164,22 @@ export class PlayScene extends Scene {
 
     //level emit vehicle collision with goal
     level2.on(LevelEvent.OnVehicleCollisionWithGoal, (numOfStarCollected) => {
-      this.winScreen.setTextureForStars(numOfStarCollected);
-      this.ui.setScreenActive(GameConstant.SCREEN_WIN);
+      DataManager.updateStarLevel(numOfStarCollected);
+      this.winScreen.setupForLevelComplete(DataManager.checkCurrentLevelIsEndLevel(), numOfStarCollected);
 
+      this._win();
     });
 
     level2.on(LevelEvent.OnVehicleDie, () => {
       this.playScreen.hideResetButton();
     });
 
-    level2.on(LevelEvent.Complete, () => {
-      this._win();
-    });
-
     level2.on(LevelEvent.LevelFail, () => {
       this._lose();
+    });
+
+    level2.on(LevelEvent.Complete, () => {
+      
     });
 
     this.levelManager.addLevel(level2);
@@ -238,18 +237,17 @@ export class PlayScene extends Scene {
   }
 
   _lose() {
-    if (GameConstant.CHEAT_IMMORTAL) {
-      return;
-    }
-
-    this.ui.setScreenActive(GameConstant.SCREEN_WIN);
+    this.ui.setScreenActive(GameConstant.SCREEN_LOSE);
     Game.onLose();
     GameStateManager.state = GameState.Lose;
   }
 
   _win(delay = 0) {
+    this.ui.setScreenActive(GameConstant.SCREEN_WIN);
     Game.onWin();
     GameStateManager.state = GameState.Win;
+
+    DataManager.updateNextLevel();
   }
 
   reInit() {  
@@ -287,13 +285,8 @@ export class PlayScene extends Scene {
   }
 
   _onNextLevel() {
-    
-    this._loadNextLevel();
+    DataManager.nextLevel();
 
-  }
-
-  _loadNextLevel() {
-    
     Tween.createTween(this.blackScreen.displayObject, { alpha: 1 }, {
       duration    : 0.2,
       delay       : 0.1,
@@ -302,7 +295,6 @@ export class PlayScene extends Scene {
         this.reInit();
         this._newLevel();
         this.directionSignsBoard.show();
-        this.playScreen.showStartButton();
 
         this._playChangeSceneInFx();
       }

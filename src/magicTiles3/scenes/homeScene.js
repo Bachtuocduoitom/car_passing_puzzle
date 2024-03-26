@@ -15,6 +15,8 @@ import { PureTransform } from "../../pureDynamic/core/pureTransform";
 import { Alignment, MaintainAspectRatioType } from "../../pureDynamic/core/pureTransformConfig";
 import { PureSprite } from "../../pureDynamic/PixiWrapper/pureSprite";
 import { Tween } from "../../systems/tween/tween";
+import { ChooseLevelsScreen, ChooseLevelsScreenEvent } from "../screens/chooseLevelScreen";
+
 export const HomeSceneEvent = Object.freeze({
   Play : "play",
 });
@@ -40,12 +42,24 @@ export class HomeScene extends Scene {
     super.create();
     this.ui.addScreens(
       new HomeScreen(),
+      new ChooseLevelsScreen(),
     );
+    this.chooseLevelsScreen = this.ui.getScreen(GameConstant.SCREEN_CHOOSE_LEVEL);
+    this.chooseLevelsScreen.on(ChooseLevelsScreenEvent.BackHome, () => {
+      this.ui.setScreenActive(GameConstant.SCREEN_CHOOSE_LEVEL, false);
+    });
+    this.chooseLevelsScreen.on(ChooseLevelsScreenEvent.ChooseLevel, () => {
+      this.ui.setScreenActive(GameConstant.SCREEN_CHOOSE_LEVEL, false);
+      this.emit(HomeSceneEvent.Play);
+    });
+
     this.homeScreen = this.ui.getScreen(GameConstant.SCREEN_HOME);
     this.homeScreen.on(HomeScreenEvent.PlayButtonSelected, () => {
       this.emit(HomeSceneEvent.Play);
     });
-
+    this.homeScreen.on(HomeScreenEvent.LevelButtonSelected, () => {
+      this.ui.setScreenActive(GameConstant.SCREEN_CHOOSE_LEVEL);
+    });
     this.ui.setScreenActive(GameConstant.SCREEN_HOME);
 
     this._initBackground();

@@ -12,32 +12,19 @@ import { Util } from "../../helpers/utils";
 export class AnswerUI extends Sprite {
   constructor() {
     super();
-    this.texture = Texture.from("spr_small_answer");
+    this.texture = Texture.from("spr_answer_normal");
     this.correct = false;
 
     this._initAnswerText();
     GameResizer.registerOnResizeCallback(this.resize, this);
   }
 
-  _initBgAnswer() {
-    let texture = Texture.from("spr_small_answer");
-    let pTransform = new PureTransform({
-      alignment : Alignment.TOP_CENTER,
-      width     : texture.width,
-      height    : texture.height,
-    });
-
-    let lTransform = new PureTransform({
-      alignment : Alignment.TOP_CENTER,
-      width     : texture.width,
-      height    : texture.height,
-    });
-    this.bgAnswer = new PureSprite(texture, pTransform, lTransform);
-    this.addChild(this.bgAnswer.displayObject);
-  }
-
   resize() {
     
+  }
+
+  reset() {
+    this.texture = Texture.from("spr_answer_normal");
   }
 
   destroy() {
@@ -47,11 +34,14 @@ export class AnswerUI extends Sprite {
 
 
   _initAnswerText() {
-    this.answerText = new Text("SCORE", {
+    this.answerText = new Text("1", {
       fontFamily: "Arial",
-      fontSize: 120,
+      fontSize: 90,
       fill: "black",
       align: "left",
+      bold: true,
+      wordWrap: true,
+      wordWrapWidth: this.texture.width * 0.8,
     });
     this.answerText.anchor.set(0.5);
     
@@ -64,5 +54,13 @@ export class AnswerUI extends Sprite {
 
 
   updateData(data) {
+  }
+
+  onTrueAnswer() {
+    this.texture = Texture.from("spr_answer_true");
+  }
+
+  onFalseAnswer() {
+    this.texture = Texture.from("spr_answer_false");
   }
 }

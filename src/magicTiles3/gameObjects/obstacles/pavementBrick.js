@@ -19,6 +19,13 @@ export class PavementBrick extends Sprite {
   reset() {
     
   }
+
+  removeCollider() {
+    if (this.collider) {
+      this.collider.newDestroy();
+      this.removeChild(this.collider);
+    }
+  }
   
   _initCollider(tag) {
     if (tag == null) {

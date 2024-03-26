@@ -46,4 +46,8 @@ export class AssetSelector {
   static getExplosionTextures() {
     return Util.getTexturesContain(`48x48 - ClusterExplosionFrame`);
   }
+
+  static getImageQuestionTexture(name) {
+    return Util.getTextureContain(name)[0]; 
+  }
 }

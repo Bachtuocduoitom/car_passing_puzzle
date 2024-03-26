@@ -3,7 +3,7 @@
     {
       "id": 1,
       "name": "question 1",
-      "question" :"Hành vi nào dưới đây bị nghiêm cấm?",
+      "question" :"question_17",
       "answer": [
         {
           "id": 1,
@@ -30,7 +30,7 @@
     {
       "id": 2,
       "name": "question 2",
-      "question" :"Hành vi đưa xe cơ giới, xe máy chuyên dùng không bảo đảm tiêu chuẩn an toàn kỹ thuật và bảo vệ môi trường vào tham gia giao thông đường bộ có bị nghiêm cấm hay không?",
+      "question" :"question_18",
       "answer": [
         {
           "id": 1,
@@ -57,7 +57,7 @@
     {
       "id": 3,
       "name": "question 3",
-      "question" :"Cuộc đua xe chỉ được thực hiện khi nào?",
+      "question" :"question_19",
       "answer": [
         {
           "id": 1,
@@ -72,184 +72,29 @@
         {
           "id": 3,
           "content": "Được cơ quan có thẩm quyền cấp phép",
-          "correct": false
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "name": "question 4",
-      "question" :"Người điều khiển phương tiện giao thông đường bộ mà trong cơ thể có chất ma tuý có bị nghiêm cấm hay không?",
-      "answer": [
-        {
-          "id": 1,
-          "content": "Bị nghiêm cấm",
-          "correct": true
-        },
-        {
-          "id": 2,
-          "content": "Không bị nghiêm cấm",
-          "correct": false
-        },
-        {
-          "id": 3,
-          "content": "hông bị nghiêm cấm, nếu có chất ma tuý ở mức nhẹ, có thể điều khiển phương tiện tham gia giao thông",
-          "correct": false
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "name": "question 5",
-      "question" :"Việc lái xe mô tô, ô tô, máy kéo ngay sau khi uống rượu, bia có được phép hay không?",
-      "answer": [
-        {
-          "id": 1,
-          "content": "Không được phép",
-          "correct": true
-        },
-        {
-          "id": 2,
-          "content": "Chỉ được lái ở tốc độ chậm và quãng đường ngắn",
-          "correct": false
-        },
-        {
-          "id": 3,
-          "content": "Chỉ được lái nếu trong cơ thể có nồng độ cồn thấp",
-          "correct": false
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "name": "question 6",
-      "question" :"Người điều khiển xe môtô, ô tô, máy kéo trên đường mà trong máu hoặc hơi thở có nồng độ cồn có bị nghiêm cấm không?",
-      "answer": [
-        {
-          "id": 1,
-          "content": "Bị nghiêm cấm",
-          "correct": true
-        },
-        {
-          "id": 2,
-          "content": "Không bị nghiêm cấm",
-          "correct": false
-        },
-        {
-          "id": 3,
-          "content": "Không bị nghiêm cấm, nếu nồng độ cồn trong máu ở mức nhẹ, có thể điều khiển phương tiện tham gia giao thông",
-          "correct": false
-        }
-      ]
-    },
-    {
-      "id": 7,
-      "name": "question 7",
-      "question" :"Sử dụng rượu bia khi lái xe, nếu bị phát hiện thì bị xử lý như thế nào?",
-      "answer": [
-        {
-          "id": 1,
-          "content": "Chỉ bị nhắc nhở",
-          "correct": false
-        },
-        {
-          "id": 2,
-          "content": "Bị xử phạt hành chính hoặc có thể bị xử lý hình sự tùy theo mức độ vi phạm",
-          "correct": true
-        },
-        {
-          "id": 3,
-          "content": "Không bị xử lý hình sự",
-          "correct": false
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "name": "question 8",
-      "question" :"Theo Luật phòng chống tác hại của rượu, bia, đối tượng nào dưới đây bị cấm sử dụng rượu bia khi tham gia giao thông?",
-      "answer": [
-        {
-          "id": 1,
-          "content": "Người điều khiển: Xe ô tô, xe mô tô, xe đạp, xe gắn máy",
-          "correct": true
-        },
-        {
-          "id": 2,
-          "content": "Người ngồi phía sau người điều khiển xe cơ giới, người đi bộ",
-          "correct": false
-        },
-        {
-          "id": 3,
-          "content": "Cả ý 1 và ý 2",
-          "correct": false
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "name": "question 9",
-      "question" :"Hành vi giao xe cơ giới, xe máy chuyên dùng cho người không đủ điều kiện để điều khiển xe tham gia giao thông có được phép hay không?",
-      "answer": [
-        {
-          "id": 1,
-          "content": "Chỉ được thực hiện nếu đã hướng dẫn đầy đủ",
-          "correct": false
-        },
-        {
-          "id": 2,
-          "content": "Không được phép",
-          "correct": true
-        },
-        {
-          "id": 3,
-          "content": "Chỉ được phép thực hiện với thành viên trong gia đình",
-          "correct": false
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "name": "question 10",
-      "question" :"Hành vi điều khiển xe cơ giới chạy quá tốc độ quy định, giành đường, vượt ẩu có bị nghiêm cấm hay không?",
-      "answer": [
-        {
-          "id": 1,
-          "content": "Bị nghiêm cấm tùy từng trường hợp",
-          "correct": false
-        },
-        {
-          "id": 2,
-          "content": "Không bị nghiêm cấm",
-          "correct": false
-        },
-        {
-          "id": 3,
-          "content": "Bị nghiêm cấm",
           "correct": true
         }
       ]
     }
+    
+      
   ],
   "starQuestion" : [
     {
       "id": 1,
       "name": "question 1",
-      "question" :"Phần của đường bộ đươc sử dụng \ncho các phương tiện giao thông qua lại là gì?",
+      "question" :"question_1",
       "answer": [
         {
           "id": 1,
-          "content": "Phần mặt đường và lề đường",
           "correct": true
         },
         {
           "id": 2,
-          "content": "Phần đường xe chạy",
           "correct": false
         },
         {
           "id": 3,
-          "content": "Phần đường xe cơ giới",
           "correct": false
         }
       ]
@@ -257,21 +102,18 @@
     {
       "id": 2,
       "name": "question 2",
-      "question" :"“Làn đường” là gì?",
+      "question" :"question_2",
       "answer": [
         {
           "id": 1,
-          "content": "Là một phần của phần đường xe chạy được chai theo chiều dọc của đường, sử dụng cho xe chạy.",
           "correct": false
         },
         {
           "id": 2,
-          "content": "Là một phần của phần đường xe chạy được chia theo chiều dọc của đường, có bề rộng đủ cho xe chạy an toàn",
           "correct": true
         },
         {
           "id": 3,
-          "content": "Là một phần của phần đường xe chạy được chia theo chiều dọc của đường, có đủ bề rộng cho xe ô tô chạy an toàn",
           "correct": false
         }
       ]
@@ -279,21 +121,18 @@
     {
       "id": 3,
       "name": "question 3",
-      "question" :"Khi gặp biển nào thì người lái xe không được quay đầu xe?",
+      "question" :"question_3",
       "answer": [
         {
           "id": 1,
-          "content": "Biển 1",
           "correct": false
         },
         {
           "id": 2,
-          "content": "Biển 2",
           "correct": true
         },
         {
           "id": 3,
-          "content": "Biển 3",
           "correct": false
         }
       ]

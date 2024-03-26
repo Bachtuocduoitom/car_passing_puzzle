@@ -57,37 +57,35 @@ export class QuestionScreen extends UIScreen {
   }
 
   _initQuestionTable() {
-    let questionTableTextture = Texture.from("spr_question_vintage_frame");
-    let pTransform = new PureTransform({
-      alignment               : Alignment.TOP_CENTER,
-      x                       : 0,
-      y                       : 100,
-      usePercent              : true,
-      width                   : 0.8,
-      height                  : 0.35,
-      maintainAspectRatioType : MaintainAspectRatioType.MIN,
-    });
+    let questionTableTexture = Texture.from("spr_blank_box");
     let lTransform = new PureTransform({
       alignment               : Alignment.TOP_CENTER,
       x                       : 0,
-      y                       : 50,
-      width                   : questionTableTextture.width * 0.3,
-      height                  : questionTableTextture.height * 0.3,
-      maintainAspectRatioType : MaintainAspectRatioType.MIN,
+      y                       : 20,
+      width                   : questionTableTexture.width,
+      height                  : questionTableTexture.height,
     });
-    this.questionTable = new PureSprite(questionTableTextture, pTransform, lTransform);
+    this.questionTable = new PureSprite(questionTableTexture, lTransform);
     this.addChild(this.questionTable.displayObject);
 
-    this.questionText = new Text("SCORE", {
-      fontFamily: "Arial",
-      fontSize: 140,
-      fill: "black",
-      align: "left",
-      bold: true,
-    });
-    this.questionText.anchor.set(0.5);
-    this.questionText.position.set(0, this.questionTable.displayObject.height);
-    this.questionTable.displayObject.addChild(this.questionText);
+    // this.questionText = new Text("Phần của đường bộ đươc sử dụng cho các phương tiện giao thông qua lại là gì?", {
+    //   fontFamily: "Arial",
+    //   fontSize: 50,
+    //   fill: "red",
+    //   align: "left",
+    //   bold: true,
+    //   wordWrap: true,
+    //   wordWrapWidth: questionTableTexture.width,
+    // });
+    // this.questionText.anchor.set(0.5, 0);
+    // this.questionText.position.set(0, this.questionTable.displayObject.height * 0.5);
+    // this.questionTable.displayObject.addChild(this.questionText);
+
+    this.questionImg = new Sprite(Texture.from("ques_1"));
+    this.questionImg.anchor.set(0.5, 0);
+    this.questionImg.position.set(0, 40);
+    this.questionImg.scale.set(2);
+    this.questionTable.displayObject.addChild(this.questionImg);
   }
 
   _initAnswersCard() {
@@ -113,7 +111,8 @@ export class QuestionScreen extends UIScreen {
   }
 
   setQuestion(questionData) {
-    this.questionText.text = questionData.question;
+    // this.questionText.text = questionData.question;
+    this.questionImg.texture = Texture.from(questionData.question);
     this.bottoms.forEach(bottom => bottom.hide());
     switch(questionData.answer.length) {
       case 2:

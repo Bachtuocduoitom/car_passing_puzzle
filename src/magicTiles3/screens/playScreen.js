@@ -4,7 +4,7 @@ import { UIScreen } from "../../pureDynamic/PixiWrapper/screen/uiScreen";
 import { GameResizer } from "../../pureDynamic/systems/gameResizer";
 import { Game } from "../../game";
 import { DataManager } from "../data/dataManager";
-import { Container, TextStyle, Texture } from "pixi.js";
+import { Container, Text, TextStyle, Texture } from "pixi.js";
 import { PureTransform } from "../../pureDynamic/core/pureTransform";
 import { Alignment, MaintainAspectRatioType } from "../../pureDynamic/core/pureTransformConfig";
 import { PureSprite } from "../../pureDynamic/PixiWrapper/pureSprite";
@@ -27,11 +27,15 @@ export class PlayScreen extends UIScreen {
     super.create();
     this._initStartButton();
     this._initResetButton();
+    this._createLevelText();
    
   }
 
   show() {
     super.show();
+    this.showLevelText();
+    this.hideResetButton();
+    this.showStartButton();
   }
 
   _initStartButton() {
@@ -93,6 +97,31 @@ export class PlayScreen extends UIScreen {
     Util.registerOnPointerDown(this.resetButton.displayObject, this._onResetLevel.bind(this));
   }
   
+  _createLevelText() {
+    let texture = Texture.from("spr_transparent");
+    let lTransform = new PureTransform({
+      alignment: Alignment.TOP_CENTER,
+      x: 0,
+      y: 40,
+    });
+    this.anchorSprite = new PureSprite(texture, lTransform);
+    this.anchorSprite.displayObject.visible = false;
+    this.addChild(this.anchorSprite.displayObject);
+
+    this.levelText = new Text("Level", {
+      fontFamily: "Comic Sans MS",
+      fontSize: 65,
+      fill: "white",
+      stroke: "grey",
+      strokeThickness: 10,
+      fontWeight: "bold",  
+    });
+    this.levelText.x = 0;
+    this.levelText.y = 0;
+    this.levelText.anchor.set(0.5);
+    
+    this.anchorSprite.displayObject.addChild(this.levelText);
+  }
   
   resize() {
     super.resize();
@@ -121,5 +150,15 @@ export class PlayScreen extends UIScreen {
 
   showResetButton() {
     this.resetButton.displayObject.visible = true;
+  }
+
+  hideLevelText() {
+    this.anchorSprite.displayObject.visible = false;
+  }
+
+  showLevelText() {
+    console.log(DataManager.currentLevel);
+    this.levelText.text = `${DataManager.currentLevel}`;
+    this.anchorSprite.displayObject.visible = true;
   }
 }
