@@ -10,6 +10,7 @@ import { GameConstant } from "../../../gameConstant";
 import { VehicleEvent } from "./vehicleEvent";
 import { VehicleExplosionFx, VehicleExplosionFxEvent } from "../effect/vehicleExplosionFx";
 import { DebugUtils } from "pixi-spine";
+import { OutlineFilter } from "pixi-filters";
 
 export class vehicleBase extends AnimatedSprite {
   constructor(textures) {
@@ -20,10 +21,12 @@ export class vehicleBase extends AnimatedSprite {
     this._initCollider();
     this._config();
     this._createExplosionFx();
+    this._initRedBorderTwinkle();
   }
 
   _config() {
     this.anchor.set(0.5);
+    this.isPlayTwinkle = false;
     this.state = VehicleState.STAY ; 
     this.direction = VehicleDirection.RIGHT;
     this.rotation = - Math.PI / 2;
@@ -150,6 +153,7 @@ export class vehicleBase extends AnimatedSprite {
 
   onDie() {
     this.state = VehicleState.DEAD;
+    this.chainTwinkleTween.stop();
     this._die();
   }
 
@@ -357,6 +361,11 @@ export class vehicleBase extends AnimatedSprite {
     this.emit("click");
     console.log("Vehicle: " + "click");
     this.state = VehicleState.RUN;
+    this.twinkleTween.stop(); 
+    if (!this.isPlayTwinkle) {
+      this.chainTwinkleTween.start();
+    }
+    this.chainTwinkleTween.start();
     this.collider.enabled = true;
   }
 
@@ -460,5 +469,24 @@ export class vehicleBase extends AnimatedSprite {
     this.explosionFx = new VehicleExplosionFx(0.2);
     this.explosionFx.zIndex = this.zIndex + 1;
     this.addChild(this.explosionFx);
+  }
+
+  _initRedBorderTwinkle() {
+    this.outlineFilter = new OutlineFilter(0, 0xFFD700);
+    this.filters = [this.outlineFilter];
+
+    this.twinkleTween = Tween.createTween(this.outlineFilter, {thickness: 10}, {
+      duration: 0.4,
+      repeat: 5,
+      yoyo: true,
+    }).start();
+
+    this.chainTwinkleTween = Tween.createTween(this.outlineFilter, {thickness: 2}, {
+      duration: 0.4,
+      onStart: () => {
+        this.isPlayTwinkle = true;
+      }
+    });
+    this.twinkleTween.chain(this.chainTwinkleTween);
   }
 }

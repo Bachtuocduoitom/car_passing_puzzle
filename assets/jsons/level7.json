@@ -1,5 +1,5 @@
 { "compressionlevel":-1,
-  "name":"level 1-7",
+  "name":"level I-7",
  "height":37,
  "infinite":false,
  "layers":[
@@ -377,5 +377,5 @@
  "width":66,
  "numberOfTurnRightSignItems": 2,
   "numberOfTurnLeftSignItems": 3,
-  "numberOfTurnBackSignItems": 4
+  "numberOfTurnBackSignItems": 1
 }

@@ -333,8 +333,7 @@ export class PlayScene extends Scene {
     this.gameplay.x = GameResizer.width / 2;
     this.gameplay.y = GameResizer.height / 2;
 
-    this.directionSignsBoard.x = GameResizer.width * 1/2 - this.directionSignsBoard.width/2 -80;
-    this.directionSignsBoard.y = GameResizer.height * 1/2 - this.directionSignsBoard.height/2 - 20;
+    this.directionSignsBoard.resize();
   }
 
   _initChangeSceneFx() {

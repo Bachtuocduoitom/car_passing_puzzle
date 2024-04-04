@@ -82,7 +82,7 @@ export const GameConstant = Object.freeze({
   INDEXEDDB_CURRENT_LEVEL_KEY     : "currentLevel",
   INDEXEDDB_LIST_LEVEL_UNLOCK_KEY : "unlocks",
   INDEXEDDB_LIST_LEVEL_STAR_KEY   : "stars",
-  PLAYER_DEFAULT_LEVEL            : "level 1-1",
-  PLAYER_DEFAULT_LEVEL_UNLOCK     : ["level 1-1"],
+  PLAYER_DEFAULT_LEVEL            : "level I-1",
+  PLAYER_DEFAULT_LEVEL_UNLOCK     : ["level I-1"],
   PLAYER_DEFAULT_LEVEL_STAR       : [0],
 });

@@ -1,5 +1,5 @@
 { "compressionlevel":-1,
-  "name":"level 1-2",
+  "name":"level I-2",
  "height":37,
  "infinite":false,
  "layers":[
@@ -351,7 +351,7 @@
  "type":"map",
  "version":"1.10",
  "width":66,
- "numberOfTurnRightSignItems": 2,
-  "numberOfTurnLeftSignItems": 4,
-  "numberOfTurnBackSignItems": 3
+ "numberOfTurnRightSignItems": 1,
+  "numberOfTurnLeftSignItems": 3,
+  "numberOfTurnBackSignItems": 1
 }

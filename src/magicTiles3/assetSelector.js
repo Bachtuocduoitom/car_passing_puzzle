@@ -50,4 +50,8 @@ export class AssetSelector {
   static getImageQuestionTexture(name) {
     return Util.getTextureContain(name)[0]; 
   }
+
+  static getTutorialTextures() {
+    return Util.getTexturesContain(`tutorial_`);
+  }
 }

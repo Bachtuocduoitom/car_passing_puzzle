@@ -3,6 +3,8 @@ import { AssetSelector } from "../../assetSelector";
 import { CollisionTag } from "../../../physics/aabb/collisionTag";
 import { SignItem } from "../../ui/signItem";
 import { DirectionSignsBoardEvent } from "./directionSignsBoardEvent";
+import { GameResizer } from "../../../pureDynamic/systems/gameResizer";
+import { DataManager } from "../../data/dataManager";
 
 export class DirectionSignsBoard extends Container {
   constructor() {
@@ -35,8 +37,6 @@ export class DirectionSignsBoard extends Container {
     //turn right box
     this.turnRightSignBox = new SignItem(CollisionTag.TurnRightSign);
     this.turnRightSignBox.pivot.set(0.5);
-    this.turnRightSignBox.x = -this.board.width / 2 + 50;
-    this.turnRightSignBox.y = -this.turnRightSignBox.height / 2;
     this.addChild(this.turnRightSignBox);
     this.directionSignBoxes.push(this.turnRightSignBox);
 
@@ -44,15 +44,11 @@ export class DirectionSignsBoard extends Container {
     this.turnLeftSignBox = new SignItem(CollisionTag.TurnLeftSign);
     this.turnLeftSignBox.on("chosen", () => {})
     this.turnLeftSignBox.pivot.set(0.5);
-    this.turnLeftSignBox.x = -this.turnLeftSignBox.width / 2;
-    this.turnLeftSignBox.y = -this.turnLeftSignBox.height / 2;
     this.addChild(this.turnLeftSignBox);
     this.directionSignBoxes.push(this.turnLeftSignBox);
 
     //turn back box
     this.turnBackSignBox = new SignItem(CollisionTag.TurnBackSign);
-    this.turnBackSignBox.x = this.board.width / 2 - 50 - this.turnBackSignBox.width;
-    this.turnBackSignBox.y = -this.turnBackSignBox.height / 2;
     this.addChild(this.turnBackSignBox);
     this.directionSignBoxes.push(this.turnBackSignBox);
 
@@ -90,6 +86,38 @@ export class DirectionSignsBoard extends Container {
 
   show() {
     this.visible = true;
+    DataManager.getLevelData().width > 60 ? this.showHorizontalDirectionSignBoard() : this.showVerticalDirectionSignBoard();
+    this.resize();
   }
 
+  showVerticalDirectionSignBoard() {
+    this.board.rotation = Math.PI / 2;
+
+    this.turnRightSignBox.x = -this.turnRightSignBox.width / 2;
+    this.turnRightSignBox.y = -this.board.width / 2 + 50;
+
+    this.turnLeftSignBox.x = -this.turnLeftSignBox.width / 2;
+    this.turnLeftSignBox.y = -this.turnLeftSignBox.height / 2;
+
+    this.turnBackSignBox.x = -this.turnBackSignBox.width / 2;
+    this.turnBackSignBox.y = this.board.width / 2 - 50 - this.turnBackSignBox.height;
+  }
+
+  showHorizontalDirectionSignBoard() {
+    this.board.rotation = 0;
+
+    this.turnRightSignBox.x = -this.board.width / 2 + 50;
+    this.turnRightSignBox.y = -this.turnRightSignBox.height / 2;
+
+    this.turnLeftSignBox.x = -this.turnLeftSignBox.width / 2;
+    this.turnLeftSignBox.y = -this.turnLeftSignBox.height / 2;
+
+    this.turnBackSignBox.x = this.board.width / 2 - 50 - this.turnBackSignBox.width;
+    this.turnBackSignBox.y = -this.turnBackSignBox.height / 2;
+  }
+
+  resize() {
+    this.x = GameResizer.width * 1/2 - this.width/2 - 30;
+    this.y = GameResizer.height * 1/2 - this.height/2 - 20;
+  }
 }

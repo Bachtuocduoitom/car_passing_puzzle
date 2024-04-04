@@ -141,13 +141,13 @@ export class SignItem extends Container {
 
   deActive() {
     this.canChoose = false;
-    this.alpha = 0.5;
-    this.directionSignSprite.alpha = 0.5;
+    this.background.tint = 0x7f7f7f;
+    this.directionSignSprite.tint = 0x7f7f7f;
   }
 
   reset() {
-    this.alpha = 1;
-    this.directionSignSprite.alpha = 1;
+    this.background.tint = 0xffffff;
+    this.directionSignSprite.tint = 0xffffff;
     this.canChoose = true;
     this.score = 0;
     this.numberText.text = `${this.score}`;

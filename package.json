@@ -30,6 +30,7 @@
     "@pixi/particle-emitter": "^5.0.8",
     "@pixi/sound": "^5.2.0",
     "@tweenjs/tween.js": "^21.0.0",
+    "pixi-filters": "^5.3.0",
     "pixi-scrollbox": "^2.3.1",
     "pixi-spine": "^4.0.4",
     "pixi-viewport": "4.10.0",

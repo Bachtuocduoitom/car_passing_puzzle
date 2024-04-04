@@ -50,7 +50,7 @@ module.exports = {
       PIXI: "pixi.js",
     }),
     new HtmlWebpackPlugin({
-      filename           : "index.html",
+      filename           : "gplx.html",
       template           : "./src/index.ejs",
       templateParameters : {
         adsType : "PREVIEW",

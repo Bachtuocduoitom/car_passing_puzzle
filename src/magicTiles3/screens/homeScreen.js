@@ -14,6 +14,7 @@ import { AssetSelector } from "../assetSelector";
 import { Util } from "../../helpers/utils";
 export const HomeScreenEvent = Object.freeze({
   PlayButtonSelected  : "PlayButtonSelected",
+  TutorialButtonSelected : "TutorialButtonSelected",
   LevelButtonSelected : "LevelButtonSelected",
 });
 
@@ -28,6 +29,7 @@ export class HomeScreen extends UIScreen {
     this.resize();
 
     this._initPlayButton();
+    this._initTutorialButton();
     this._initLevelButton();
   }
 
@@ -54,7 +56,7 @@ export class HomeScreen extends UIScreen {
     let lTransform = new PureTransform({
       alignment  : Alignment.BOTTOM_LEFT,
       x          : 200,
-      y          : -380,
+      y          : -460,
       width      : 0.3 * texturePlay.width,
       height     : 0.3 * texturePlay.height,
       usePercent : true,
@@ -67,9 +69,9 @@ export class HomeScreen extends UIScreen {
       this.emit(HomeScreenEvent.PlayButtonSelected);
     });
 
-    let textOnButton = new Text("Play", {
+    let textOnButton = new Text("Chơi", {
       fontFamily: "Comic Sans MS",
-      fontSize: 190,
+      fontSize: 160,
       fill: "white",
       align: "center",
       fontWeight: "bold",
@@ -78,6 +80,40 @@ export class HomeScreen extends UIScreen {
     textOnButton.anchor.set(0.5);
     textOnButton.position.set(texturePlay.width / 2, - texturePlay.height / 2);
     this.buttonPlay.displayObject.addChild(textOnButton);
+  }
+
+  _initTutorialButton() {
+    let textureTutorial = Texture.from("spr_button_blank");
+    let pTransform = new PureTransform({
+      alignment  : Alignment.BOTTOM_LEFT,
+      usePercent : true,
+    });
+    let lTransform = new PureTransform({
+      alignment  : Alignment.BOTTOM_LEFT,
+      x          : 200,
+      y          : -310,
+      width      : 0.3 * textureTutorial.width,
+      height     : 0.3 * textureTutorial.height,
+      usePercent : true,
+    });
+    this.buttonTutorial = new PureSprite(textureTutorial, pTransform, lTransform);
+    this.addChild(this.buttonTutorial.displayObject);
+
+    Util.registerOnPointerDown(this.buttonTutorial.displayObject, () => {
+      this.emit(HomeScreenEvent.TutorialButtonSelected);
+    });
+
+    let textOnButton = new Text("Hướng dẫn", {
+      fontFamily: "Comic Sans MS",
+      fontSize: 160,
+      fill: "white",
+      align: "center",
+      fontWeight: "bold",
+      stroke: "black",
+    });
+    textOnButton.anchor.set(0.5);
+    textOnButton.position.set(textureTutorial.width / 2, - textureTutorial.height / 2);
+    this.buttonTutorial.displayObject.addChild(textOnButton);
   }
 
   _initLevelButton() {
@@ -89,7 +125,7 @@ export class HomeScreen extends UIScreen {
     let lTransform = new PureTransform({
       alignment  : Alignment.BOTTOM_LEFT,
       x          : 200,
-      y          : -200,
+      y          : -160,
       width      : 0.3 * textureLevel.width,
       height     : 0.3 * textureLevel.height,
       usePercent : true,
@@ -101,9 +137,9 @@ export class HomeScreen extends UIScreen {
       this.emit(HomeScreenEvent.LevelButtonSelected);
     });
 
-    let textOnButton = new Text("Level", {
+    let textOnButton = new Text("Cấp độ", {
       fontFamily: "Comic Sans MS",
-      fontSize: 190,
+      fontSize: 160,
       fill: "white",
       align: "center",
       fontWeight: "bold",
