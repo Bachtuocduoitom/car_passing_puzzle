@@ -112,6 +112,10 @@ export class SignItem extends Container {
   setNumOfSigns(num) {
     this.score = num;
     this.numberText.text = `${num}`;
+
+    if (this.score == 0) {
+      this.deActive();
+    }
   }
 
   onChosen() {
